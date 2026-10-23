@@ -1,20 +1,33 @@
 import { io } from 'socket.io-client';
 
-const SOCKET_URL = 'http://localhost:3001';
+import { GAME_CONFIG } from '../config/gameConfig';
 
-export const socket = io(SOCKET_URL, {
-  autoConnect: false,
-  transports: ['websocket']
-});
+export const socket = io(
+  GAME_CONFIG.serverUrl,
+  {
+    autoConnect: false,
+    transports: ['websocket']
+  }
+);
 
-export const connectSocket = () => {
+export function connectSocket() {
   if (!socket.connected) {
     socket.connect();
   }
-};
+}
 
-export const disconnectSocket = () => {
+export function disconnectSocket() {
   if (socket.connected) {
     socket.disconnect();
   }
-};
+}
+
+export function emitEvent(event, payload) {
+  if (!socket.connected) {
+    return false;
+  }
+
+  socket.emit(event, payload);
+
+  return true;
+}

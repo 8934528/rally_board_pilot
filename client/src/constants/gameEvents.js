@@ -1,10 +1,8 @@
 export const GAME_EVENTS = {
   STATE_REQUEST: 'game:state:request',
-
   STATE_UPDATE: 'game:state:update',
 
   SCORE_ADD: 'game:score:add',
-
   SCORE_SUBTRACT: 'game:score:subtract',
 
   TEAM_UPDATE: 'game:team:update',
@@ -15,9 +13,19 @@ export const GAME_EVENTS = {
 
   STATUS_UPDATE: 'game:status:update',
 
-  TIMER_UPDATE: 'game:timer:update',
+  THEME_UPDATE: 'game:theme:update',
+
+  TIMER_SET: 'game:timer:set',
+  TIMER_START: 'game:timer:start',
+  TIMER_PAUSE: 'game:timer:pause',
+  TIMER_RESET: 'game:timer:reset',
+
+  WHEEL_SET: 'game:wheel:set',
+  WHEEL_SPIN: 'game:wheel:spin',
 
   ANNOUNCEMENT_UPDATE: 'game:announcement:update',
 
-  WHEEL_UPDATE: 'game:wheel:update'
+  WINNER_UPDATE: 'game:winner:update',
+
+  RESET_GAME: 'game:reset'
 };
