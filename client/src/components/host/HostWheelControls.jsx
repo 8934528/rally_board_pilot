@@ -39,7 +39,7 @@ function HostWheelControls({
           >
             <i className="bi bi-arrow-repeat" />
             <span>SPIN</span>
-            <span className="rbp-shortcut-badge">W</span>
+            <span className="rbp-shortcut-badge">CTRL + W</span>
           </Button>
         </div>
       </div>

@@ -8,7 +8,11 @@ function HostControls({
   activePage
 }) {
   return (
-    <div className="host-controls" role="group" aria-label="Host primary game controls">
+    <div
+      className="host-controls items-end d-flex justify-content-end"
+      role="group"
+      aria-label="Host primary game controls"
+    >
       <Button
         variant={status === 'LIVE' ? 'success' : 'secondary'}
         size="small"
@@ -17,7 +21,7 @@ function HostControls({
       >
         <i className="bi bi-broadcast" />
         <span>GO LIVE</span>
-        <span className="rbp-shortcut-badge">L</span>
+        <span className="rbp-shortcut-badge">CTRL + L</span>
       </Button>
 
       <Button
@@ -28,7 +32,7 @@ function HostControls({
       >
         <i className="bi bi-pause-circle" />
         <span>PAUSE</span>
-        <span className="rbp-shortcut-badge">P</span>
+        <span className="rbp-shortcut-badge">CTRL + P</span>
       </Button>
 
       <Button

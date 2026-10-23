@@ -1,4 +1,4 @@
-import Button from '../common/Button';
+import Tooltip from '../common/Tooltip';
 
 function QuickActions({
   onLive,
@@ -6,43 +6,62 @@ function QuickActions({
   onReset,
   status
 }) {
+  const isLive = status === 'LIVE';
+  const isPaused = status === 'PAUSED';
+
   return (
     <div className="quick-actions-bar" role="group" aria-label="Game Control Actions">
-      <Button
-        id="btn-quick-live"
-        variant={status === 'LIVE' ? 'success' : 'secondary'}
-        size="small"
-        className={`quick-action-btn ${status === 'LIVE' ? 'active-live' : ''}`}
-        onClick={onLive}
-      >
-        <i className="bi bi-broadcast" />
-        <span>GO LIVE</span>
-        <span className="rbp-shortcut-badge">L</span>
-      </Button>
+      
+      <Tooltip content="Go Live (CTRL + L)">
+        <button
+          type="button"
+          id="btn-quick-live"
+          className={`rbp-icon-btn rbp-icon-btn-small ${
+            isLive ? 'rbp-button-success active-live' : 'rbp-button-secondary'
+          }`}
+          onClick={onLive}
+          aria-label="Go Live"
+          aria-pressed={isLive}
+        >
+          <i className="bi bi-broadcast" aria-hidden="true" />
+        </button>
+      </Tooltip>
 
-      <Button
-        id="btn-quick-pause"
-        variant={status === 'PAUSED' ? 'warning' : 'secondary'}
-        size="small"
-        className={`quick-action-btn ${status === 'PAUSED' ? 'active-pause' : ''}`}
-        onClick={onPause}
-      >
-        <i className="bi bi-pause-circle" />
-        <span>PAUSE</span>
-        <span className="rbp-shortcut-badge">P</span>
-      </Button>
 
-      <Button
-        id="btn-quick-reset"
-        variant="danger"
-        size="small"
-        className="quick-action-btn"
-        onClick={onReset}
-      >
-        <i className="bi bi-arrow-counterclockwise" />
-        <span>RESET</span>
-        <span className="rbp-shortcut-badge">R</span>
-      </Button>
+
+      <Tooltip content="Pause (CTRL + P)">
+        <button
+          type="button"
+          id="btn-quick-pause"
+          className={`rbp-icon-btn rbp-icon-btn-small ${
+            isPaused ? 'rbp-button-warning active-pause' : 'rbp-button-secondary'
+          }`}
+          onClick={onPause}
+          aria-label="Pause"
+          aria-pressed={isPaused}
+        >
+          <i className="bi bi-pause-circle-fill" aria-hidden="true" />
+        </button>
+      </Tooltip>
+
+      {/* Reset Button (Icon-only with accessible tooltip and ARIA label) */}
+      <Tooltip content="Reset Game (CTRL + R)">
+        <button
+          type="button"
+          id="btn-quick-reset"
+          className="rbp-icon-btn rbp-icon-btn-small rbp-button-danger"
+          onClick={onReset}
+          aria-label="Reset Game"
+        >
+          <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
+        </button>
+      </Tooltip>
+
+      <span className="quick-actions-shortcut-legend d-none d-md-inline-block">
+        <span className="rbp-shortcut-badge">CTRL+L</span>
+        <span className="rbp-shortcut-badge">CTRL+P</span>
+        <span className="rbp-shortcut-badge">CTRL+R</span>
+      </span>
     </div>
   );
 }

@@ -121,7 +121,8 @@ function ControllerPage() {
         </div>
       </header>
 
-      <div className="controller-layout">
+      <div className="controller-layout" id="controller-layout">
+        {/* Desktop Sidebar */}
         <ControllerSidebar
           activePage={gameState.board.activePage}
           status={gameState.status}
@@ -147,6 +148,7 @@ function ControllerPage() {
             />
           </div>
 
+
           <section className="control-grid" aria-label="Team Scores">
             <ScoreControls
               team="A"
@@ -170,47 +172,55 @@ function ControllerPage() {
             />
           </section>
 
-          <section className="wide-control-card">
-            <div className="wide-card-heading">
-              <div>
-                <div className="eyebrow">TEAM SETUP</div>
-                <h2>Team Configuration</h2>
+
+
+          <div className="controller-two-column-row" id="setup-monitor-row">
+            
+            <section className="control-card setup-config-card" id="setup-config-card">
+              <div className="wide-card-heading">
+                <div>
+                  <div className="eyebrow">SETUP</div>
+                  <h2>Configuration</h2>
+                </div>
               </div>
-            </div>
 
-            <div className="team-config-grid">
-              <TeamConfig
-                team="A"
-                teamData={gameState.teams.A}
-                onUpdate={controller.updateTeam}
-              />
+              <div className="team-config-grid">
+                <TeamConfig
+                  team="A"
+                  teamData={gameState.teams.A}
+                  onUpdate={controller.updateTeam}
+                />
 
-              <TeamConfig
-                team="B"
-                teamData={gameState.teams.B}
-                onUpdate={controller.updateTeam}
-              />
-            </div>
-          </section>
-
-          <section className="wide-control-card">
-            <div className="wide-card-heading">
-              <div>
-                <div className="eyebrow">MONITOR</div>
-                <h2>Live Screen Preview</h2>
+                <TeamConfig
+                  team="B"
+                  teamData={gameState.teams.B}
+                  onUpdate={controller.updateTeam}
+                />
               </div>
-              <button
-                type="button"
-                className="btn-link-action"
-                onClick={() => setThemeModalOpen(true)}
-              >
-                <i className="bi bi-palette" /> Edit Theme
-              </button>
-            </div>
-            <BoardPreview gameState={gameState} />
-          </section>
+            </section>
+
+
+            <section className="control-card monitor-preview-card" id="monitor-preview-card">
+              <div className="wide-card-heading">
+                <div>
+                  <div className="eyebrow">MONITOR</div>
+                  <h2>Live Screen Preview</h2>
+                </div>
+                <button
+                  type="button"
+                  className="btn-link-action"
+                  onClick={() => setThemeModalOpen(true)}
+                  aria-label="Edit board theme"
+                >
+                  <i className="bi bi-palette" /> Edit Theme
+                </button>
+              </div>
+              <BoardPreview gameState={gameState} />
+            </section>
+          </div>
         </main>
       </div>
+
 
       <TimerConfigModal
         open={timerModalOpen}
@@ -222,6 +232,7 @@ function ControllerPage() {
         onReset={controller.resetTimer}
         isRunning={gameState.timer.running}
       />
+
 
       <Modal
         open={themeModalOpen}

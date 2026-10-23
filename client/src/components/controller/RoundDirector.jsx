@@ -36,7 +36,7 @@ function RoundDirector({
           >
             <i className="bi bi-chevron-right" />
             <span>Next Round</span>
-            <span className="rbp-shortcut-badge">N</span>
+            <span className="rbp-shortcut-badge">CTRL + N</span>
           </Button>
         </div>
       </div>

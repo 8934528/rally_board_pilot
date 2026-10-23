@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
 import Button from './Button';
+import Tooltip from './Tooltip';
 import { GAME_CONFIG } from '../../config/gameConfig';
 import { formatTime } from '../../utils/formatScore';
 
-const TIME_STEPS = [-10, -5, -2, -1, 1, 2, 5, 10];
+const NEGATIVE_STEPS = [-1, -2, -5, -10];
+const POSITIVE_STEPS = [1, 2, 5, 10];
 
 function TimerConfigModal({
   open,
@@ -54,18 +56,41 @@ function TimerConfigModal({
         <div className="timer-modal-footer">
           <div className="timer-actions-group">
             {isRunning ? (
-              <Button variant="warning" onClick={onPause} size="small">
-                <i className="bi bi-pause-fill" /> PAUSE
-              </Button>
+              <Tooltip content="Pause Timer (CTRL + Space)">
+                <button
+                  type="button"
+                  className="rbp-icon-btn rbp-icon-btn-medium rbp-button-warning"
+                  onClick={onPause}
+                  aria-label="Pause Timer"
+                >
+                  <i className="bi bi-pause-fill" aria-hidden="true" />
+                </button>
+              </Tooltip>
             ) : (
-              <Button variant="success" onClick={onStart} size="small">
-                <i className="bi bi-play-fill" /> START
-              </Button>
+              <Tooltip content="Start Timer (CTRL + Space)">
+                <button
+                  type="button"
+                  className="rbp-icon-btn rbp-icon-btn-medium rbp-button-success"
+                  onClick={onStart}
+                  aria-label="Start Timer"
+                >
+                  <i className="bi bi-play-fill" aria-hidden="true" />
+                </button>
+              </Tooltip>
             )}
-            <Button variant="secondary" onClick={onReset} size="small">
-              <i className="bi bi-arrow-counterclockwise" /> RESET
-            </Button>
+
+            <Tooltip content="Reset Timer">
+              <button
+                type="button"
+                className="rbp-icon-btn rbp-icon-btn-medium rbp-button-secondary"
+                onClick={onReset}
+                aria-label="Reset Timer"
+              >
+                <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
+              </button>
+            </Tooltip>
           </div>
+
           <Button variant="primary" onClick={onClose} size="small">
             DONE
           </Button>
@@ -100,22 +125,40 @@ function TimerConfigModal({
           </div>
         </div>
 
-        <div className="timer-adjust-section">
-          <span className="panel-sublabel">STEP ADJUSTMENT (SECONDS)</span>
-          <div className="timer-steps-grid">
-            {TIME_STEPS.map((step) => {
-              const isMinus = step < 0;
-              return (
+        <div className="timer-adjust-row">
+          <div className="timer-adjust-col">
+            <span className="panel-sublabel">DECREASE</span>
+            <div className="timer-square-grid" role="group" aria-label="Decrease Timer">
+              {NEGATIVE_STEPS.map((step) => (
                 <button
                   key={step}
                   type="button"
-                  className={`timer-step-btn ${isMinus ? 'step-minus' : 'step-plus'}`}
+                  className="timer-square-step-btn step-minus"
                   onClick={() => handleStep(step)}
+                  aria-label={`Subtract ${Math.abs(step)} seconds`}
                 >
-                  {isMinus ? step : `+${step}`}
+                  {step}
                 </button>
-              );
-            })}
+              ))}
+            </div>
+          </div>
+
+
+          <div className="timer-adjust-col">
+            <span className="panel-sublabel">INCREASE</span>
+            <div className="timer-square-grid" role="group" aria-label="Increase Timer">
+              {POSITIVE_STEPS.map((step) => (
+                <button
+                  key={step}
+                  type="button"
+                  className="timer-square-step-btn step-plus"
+                  onClick={() => handleStep(step)}
+                  aria-label={`Add ${step} seconds`}
+                >
+                  +{step}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 

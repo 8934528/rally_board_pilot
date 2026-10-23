@@ -48,6 +48,7 @@ function TeamConfig({
         />
       </div>
 
+
       <Button
         variant={saved ? 'success' : 'primary'}
         size="small"
@@ -57,10 +58,14 @@ function TeamConfig({
       >
         {saved ? (
           <>
-            <i className="bi bi-check2" /> SAVED
+            <i className="bi bi-check2" aria-hidden="true" />
+            <span>Saved</span>
           </>
         ) : (
-          'SAVE TEAM'
+          <>
+            <i className="bi bi-floppy" aria-hidden="true" />
+            <span>Save Team</span>
+          </>
         )}
       </Button>
     </div>
