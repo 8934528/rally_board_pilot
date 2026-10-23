@@ -10,8 +10,11 @@ function QuickActions({
   const isPaused = status === 'PAUSED';
 
   return (
-    <div className="quick-actions-bar" role="group" aria-label="Game Control Actions">
-      
+    <div
+      className="quick-actions-bar"
+      role="group"
+      aria-label="Game Control Actions"
+    >
       <Tooltip content="Go Live (CTRL + L)">
         <button
           type="button"
@@ -26,8 +29,6 @@ function QuickActions({
           <i className="bi bi-broadcast" aria-hidden="true" />
         </button>
       </Tooltip>
-
-
 
       <Tooltip content="Pause (CTRL + P)">
         <button
@@ -44,7 +45,6 @@ function QuickActions({
         </button>
       </Tooltip>
 
-      {/* Reset Button (Icon-only with accessible tooltip and ARIA label) */}
       <Tooltip content="Reset Game (CTRL + R)">
         <button
           type="button"
@@ -57,10 +57,10 @@ function QuickActions({
         </button>
       </Tooltip>
 
-      <span className="quick-actions-shortcut-legend d-none d-md-inline-block">
-        <span className="rbp-shortcut-badge">CTRL+L</span>
-        <span className="rbp-shortcut-badge">CTRL+P</span>
-        <span className="rbp-shortcut-badge">CTRL+R</span>
+      <span className="quick-actions-shortcut-legend d-none d-md-inline-flex">
+        <span className="rbp-shortcut-badge">CTRL + L</span>
+        <span className="rbp-shortcut-badge">CTRL + P</span>
+        <span className="rbp-shortcut-badge">CTRL + R</span>
       </span>
     </div>
   );

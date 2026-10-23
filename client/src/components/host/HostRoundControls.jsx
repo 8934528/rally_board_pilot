@@ -6,6 +6,7 @@ function HostRoundControls({
 }) {
   const nextRound = () => {
     const nextNum = gameState.round.number + 1;
+
     onRound(
       nextNum,
       `Round ${nextNum}`
@@ -13,12 +14,23 @@ function HostRoundControls({
   };
 
   return (
-    <section className="host-panel host-round-panel" id="host-round-panel">
+    <section
+      className="host-panel host-round-panel"
+      id="host-round-panel"
+    >
       <div className="host-round-meta">
-        <small className="host-panel-eyebrow">CURRENT ROUND</small>
+        <small className="host-panel-eyebrow">
+          CURRENT ROUND
+        </small>
+
         <div className="host-round-readout">
-          <span className="host-round-num-badge">ROUND {gameState.round.number}</span>
-          <span className="host-round-name-text">{gameState.round.name}</span>
+          <span className="host-round-num-badge">
+            ROUND {gameState.round.number}
+          </span>
+
+          <span className="host-round-name-text">
+            {gameState.round.name}
+          </span>
         </div>
       </div>
 
@@ -28,9 +40,11 @@ function HostRoundControls({
         onClick={nextRound}
         id="btn-host-next-round"
       >
-        <i className="bi bi-chevron-right" />
+        <i className="bi bi-chevron-right" aria-hidden="true" />
         <span>NEXT ROUND</span>
-        <span className="rbp-shortcut-badge">N</span>
+        <span className="rbp-shortcut-badge">
+          CTRL + N
+        </span>
       </Button>
     </section>
   );

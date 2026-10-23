@@ -1228,3 +1228,117 @@
   }
 }
 
+
+
+.controller-two-column-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+}
+
+.setup-config-card,
+.monitor-preview-card {
+  min-width: 0;
+  height: 100%;
+}
+
+.setup-config-card {
+  padding: 14px 16px;
+}
+
+.monitor-preview-card {
+  padding: 14px 16px;
+}
+
+.timer-adjust-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.timer-square-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 40px);
+  grid-auto-rows: 32px;
+  gap: 4px;
+}
+
+.timer-square-step-btn {
+  width: 40px;
+  height: 32px;
+  padding: 0;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  font-family: monospace, sans-serif;
+  cursor: pointer;
+  transition:
+    background 0.1s ease,
+    border-color 0.1s ease,
+    color 0.1s ease;
+}
+
+.timer-square-step-btn.step-minus {
+  background: rgba(255, 77, 109, 0.08);
+  border: 1px solid rgba(255, 77, 109, 0.25);
+  color: #fb7185;
+}
+
+.timer-square-step-btn.step-minus:hover {
+  background: rgba(255, 77, 109, 0.2);
+  color: #fff;
+}
+
+.timer-square-step-btn.step-plus {
+  background: rgba(49, 233, 129, 0.08);
+  border: 1px solid rgba(49, 233, 129, 0.25);
+  color: #4ade80;
+}
+
+.timer-square-step-btn.step-plus:hover {
+  background: rgba(49, 233, 129, 0.2);
+  color: #fff;
+}
+
+.quick-actions-shortcut-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.rbp-shortcut-badge {
+  opacity: 0.68;
+  filter: blur(0.15px);
+  font-size: 0.58rem;
+  font-weight: 600;
+  color: #64748b;
+  background: rgba(255, 255, 255, 0.035);
+  border-color: rgba(255, 255, 255, 0.07);
+}
+
+@media (max-width: 900px) {
+  .controller-two-column-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .controller-main {
+    padding: 12px;
+  }
+
+  .controller-page-heading {
+    align-items: flex-start;
+  }
+
+  .quick-actions-shortcut-legend {
+    display: none !important;
+  }
+
+  .timer-adjust-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+}
+

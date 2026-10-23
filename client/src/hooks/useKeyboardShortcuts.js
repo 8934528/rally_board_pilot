@@ -1,33 +1,35 @@
 import { useEffect } from 'react';
 
+const STANDALONE_KEYS = new Set(['f', 'f11', 'escape']);
+
 export function useKeyboardShortcuts(shortcutsMap = {}, enabled = true) {
   useEffect(() => {
     if (!enabled) return;
 
     const handleKeyDown = (event) => {
       const target = event.target;
-      const isInput = target &&
-        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
+      const isTypingTarget = target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT' || target.isContentEditable);
 
-      if (isInput) return;
+      if (isTypingTarget) return;
 
-      const hasCtrl = event.ctrlKey || event.metaKey;
       const key = event.key ? event.key.toLowerCase() : '';
       const code = event.code ? event.code.toLowerCase() : '';
 
-      if (!hasCtrl) {
-        return; 
+      if (STANDALONE_KEYS.has(key)) {
+        const handler = typeof shortcutsMap[key] === 'function' ? shortcutsMap[key] : code === 'escape' && typeof shortcutsMap.escape === 'function' ? shortcutsMap.escape : null;
+
+        if (typeof handler === 'function') {
+          event.preventDefault();
+          event.stopPropagation();
+          handler(event);
+        }
+
+        return;
       }
 
-      // Check if a handler exists for key combination
-      let handler = null;
-      if (typeof shortcutsMap[key] === 'function') {
-        handler = shortcutsMap[key];
-      } else if (typeof shortcutsMap[`ctrl+${key}`] === 'function') {
-        handler = shortcutsMap[`ctrl+${key}`];
-      } else if (code === 'space' && (typeof shortcutsMap['space'] === 'function' || typeof shortcutsMap['ctrl+space'] === 'function')) {
-        handler = shortcutsMap['space'] || shortcutsMap['ctrl+space'];
-      }
+      if (!event.ctrlKey) return;
+
+      const handler = typeof shortcutsMap[key] === 'function' ? shortcutsMap[key] : typeof shortcutsMap[`ctrl+${key}`] === 'function' ? shortcutsMap[`ctrl+${key}`] : code === 'space' && typeof shortcutsMap.space === 'function' ? shortcutsMap.space : code === 'space' && typeof shortcutsMap['ctrl+space'] === 'function' ? shortcutsMap['ctrl+space'] : null;
 
       if (typeof handler === 'function') {
         event.preventDefault();
@@ -37,6 +39,7 @@ export function useKeyboardShortcuts(shortcutsMap = {}, enabled = true) {
     };
 
     window.addEventListener('keydown', handleKeyDown);
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
