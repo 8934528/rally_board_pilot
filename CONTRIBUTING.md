@@ -1,43 +1,24 @@
-# Contributing to Rally Board Pilot
+# Contributing to RBP
 
-thank you for your interest in contributing to Rally Board Pilot.
+Thank you for helping improve RBP!
 
-RBP is a two-team game-show control and scoreboard system. Contributions should keep the application reliable, fast, easy to operate during live events, and visually clear on public displays.
+RBP is a two-team game-show control and scoreboard system. Contributions should keep the app fast, reliable, and easy to use during a live event.
+
+> See **README.md** for installation, URLs, and general project info.
 
 ---
 
 ## Project Goals
 
-The project focuses on:
-
-- Real-time game control
+- Fast game control during live events
 - Reliable score management
-- Live synchronization
-- Simple operator workflows
-- Presentation-ready game boards
+- Simple operator experience
+- Clean display pages for the audience
 - Clear separation between Controller, Host, and Game Board
-- Fast interaction during live events
-- Maintainable React and Node.js architecture
-
----
-
-## Technology Stack
-
-Rally Board Pilot currently uses:
-
-- React
-- Vite
-- Bootstrap
-- Node.js
-- Express
-- Socket.IO
-- CSS
 
 ---
 
 ## Project Structure
-
-The application is separated into a client and server.
 
 ```text
 rally_board_pilot/
@@ -67,82 +48,49 @@ rally_board_pilot/
 ├── scripts/
 ├── .env.example
 ├── .gitignore
+├── Makefile
 ├── package.json
-└── README.md
+├── README.md
+├── CONTRIBUTING.md
+└── SECURITY.md
 ```
 
 ---
 
 ## Getting Started
 
-### 1. Clone the Repository
-
 ```bash
 git clone <your-repository-url>
 cd rally_board_pilot
-```
-
-### 2. Install Dependencies
-
-```bash
 npm install
-```
-
-### 3. Start Development
-
-```bash
 npm run dev
-```
-
-The development environment should provide:
-
-```text
-Controller
-http://localhost:5173/controller
-
-Host
-http://localhost:5173/host
-
-Game Board
-http://localhost:5173/board
-
-Server
-http://localhost:3001
 ```
 
 ---
 
 ## Before Making Changes
 
-Before starting work:
+Pull the latest code:
 
 ```bash
 git pull
 ```
 
-Then make sure the project runs successfully:
+Make sure the project runs:
 
 ```bash
 npm run dev
 ```
 
-For frontend changes, verify the relevant page.
-
-For server changes, verify that:
-
-```text
-/api/health
-```
-
-is responding correctly and that Socket.IO clients can connect.
+For server changes, check that `/api/health` responds and that clients can connect.
 
 ---
 
 ## Branching
 
-Create a separate branch for your work.
+Make a new branch for your work.
 
-Recommended naming:
+Good names:
 
 ```text
 feature/score-controls
@@ -154,35 +102,25 @@ refactor/game-state
 docs/readme
 ```
 
-Examples:
-
 ```bash
 git checkout -b feature/timer
 ```
 
-or:
-
-```bash
-git checkout -b fix/socket-reconnect
-```
-
-Avoid doing large unrelated changes directly on the main branch.
+Do not make large unrelated changes on the main branch.
 
 ---
 
 ## Making Changes
 
-Keep changes focused.
+Keep changes focused. One task per contribution.
 
-A good contribution should generally address one main task.
-
-For example:
-
+**Good:**
 ```text
-Good:
 Add countdown timer controls
+```
 
-Less ideal:
+**Less ideal:**
+```text
 Add timer + redesign controller + change socket architecture + rewrite CSS
 ```
 
@@ -192,24 +130,21 @@ Small, focused changes are easier to review and test.
 
 ## React Guidelines
 
-When working on the React application:
-
-- Prefer reusable components.
-- Keep components focused.
-- Avoid unnecessary duplication.
-- Use hooks for reusable stateful logic.
-- Keep Socket.IO communication inside services/hooks/context where appropriate.
-- Avoid putting large amounts of business logic directly inside presentation components.
-- Keep public Game Board components presentation-focused.
+- Use reusable components.
+- Keep components focused on one thing.
+- Use hooks for shared logic.
+- Keep Socket.IO communication inside services, hooks, or context.
+- Do not put business logic inside presentation components.
+- Keep Game Board components clean and display-only.
 - Keep Controller components focused on operator controls.
 
 ---
 
 ## Server Guidelines
 
-The server is responsible for the authoritative game state.
+The server holds the main game state. Do not rely on the client for this.
 
-When implementing a new game action:
+When adding a new game action:
 
 ```text
 Client
@@ -225,50 +160,26 @@ Broadcast Updated State
 Connected Clients
 ```
 
-Do not rely on the client to be the authoritative source of game state.
-
-Server-side actions should validate their input before changing state.
+Validate all input on the server before changing state.
 
 ---
 
-## Socket.IO Events
+## Adding a New Socket Event
 
-When adding a new event:
-
-1. Add the event name to the appropriate constants/event definition.
-2. Implement the server-side handler.
-3. Validate the payload.
+1. Add the event name to the constants file.
+2. Write the server handler.
+3. Validate the data.
 4. Update the game state.
 5. Broadcast the new state.
-6. Add the client-side action/helper.
-7. Update the relevant UI.
-8. Test with multiple connected clients.
-
-Example:
-
-```text
-Controller
-    │
-    │ SCORE_ADJUST
-    ▼
-Server
-    │
-    │ Validate + Update
-    ▼
-Game State
-    │
-    │ Broadcast
-    ▼
-Controller + Host + Game Board
-```
+6. Add the client-side action.
+7. Update the UI.
+8. Test with multiple open browser windows.
 
 ---
 
 ## Game State Changes
 
-Be careful when modifying the shared game state.
-
-Changes to the game state can affect:
+Be careful when changing shared state. Changes can affect:
 
 - Controller
 - Host
@@ -277,57 +188,28 @@ Changes to the game state can affect:
 - Wheel
 - Announcements
 - Activity logs
-- Future clients
 
-When adding a new state property, consider whether it belongs under:
+When adding a new state property, place it under the right group:
 
 ```text
-teams
-round
-board
-timer
-wheel
-announcement
-theme
-status
+teams / round / board / timer / wheel / announcement / theme / status
 ```
-
-Keep the state structure predictable.
 
 ---
 
 ## UI Guidelines
 
-The Controller should prioritize:
+**Controller** — fast, clear, large controls, obvious actions, useful feedback.
 
-- Speed
-- Clarity
-- Large controls
-- Obvious actions
-- Useful feedback
-- Minimal unnecessary navigation
+**Game Board** — big text, strong visual layout, audience-readable, smooth transitions.
 
-The Game Board should prioritize:
-
-- Large readable text
-- Strong visual hierarchy
-- Audience visibility
-- Smooth transitions
-- Minimal controls
-- Presentation quality
-
-The Host interface should prioritize:
-
-- Fast access
-- Simple controls
-- Limited complexity
-- Live game operation
+**Host** — fast access, simple controls, no unnecessary complexity.
 
 ---
 
 ## CSS Guidelines
 
-Use the existing stylesheet structure where possible.
+Use the existing stylesheet structure:
 
 ```text
 styles/
@@ -339,139 +221,72 @@ styles/
 └── themes.css
 ```
 
-Avoid placing large amounts of application-wide styling inside individual JSX files.
+- Board styling → `board.css`
+- Controller styling → `controller.css`
+- Host styling → `host.css`
+- Shared styling → `global.css`
+- Animations → `animations.css`
+- Theme styling → `themes.css`
 
-Keep:
-
-- Board styling in `board.css`
-- Controller styling in `controller.css`
-- Host styling in `host.css`
-- Shared styling in `global.css`
-- Animations in `animations.css`
-- Theme-specific styling in `themes.css`
+Do not put app-wide styles inside JSX files.
 
 ---
 
 ## Bootstrap
 
-Bootstrap can be used for:
+Bootstrap can be used for layout, grids, buttons, cards, forms, modals, and utility classes.
 
-- Layout
-- Responsive grids
-- Buttons
-- Cards
-- Forms
-- Modals
-- Utility classes
-
-Custom CSS should be used when the Rally Board Pilot visual design requires something beyond standard Bootstrap components.
-
-The goal is to combine Bootstrap's reliability with the project's custom game-show visual identity.
+Use custom CSS when RBP needs something that Bootstrap does not cover.
 
 ---
 
 ## Testing Changes
 
-Before submitting a contribution, test the affected functionality.
-
-At minimum:
+Before submitting:
 
 ```bash
 npm run build
 ```
 
-Also test the application manually when appropriate.
-
-For real-time features, test with multiple browser windows:
+Also test manually. For sync features, open multiple browser windows:
 
 ```text
-Browser Window 1
-Controller
-
-Browser Window 2
-Host
-
-Browser Window 3
-Game Board
+Window 1 → Controller
+Window 2 → Host
+Window 3 → Game Board
 ```
 
-Then verify that state changes appear correctly across all clients.
-
----
-
-## Real-Time Testing
-
-For example:
-
-```text
-Controller:
-Team A +10
-
-        ↓
-
-Server:
-Team A score updated
-
-        ↓
-
-Host:
-Updated score appears
-
-        ↓
-
-Game Board:
-Updated score appears
-```
-
-If a change works only after refreshing the browser, the real-time synchronization is not working correctly.
+Check that changes appear across all windows.
 
 ---
 
 ## Commit Messages
 
-Use clear commit messages.
-
-Examples:
+Use clear messages:
 
 ```text
 feat: add score adjustment controls
 feat: add countdown timer
-feat: add spin wheel
 fix: prevent negative timer values
 fix: validate score actions
-fix: reconnect socket after server restart
 refactor: simplify game state helpers
 style: improve controller layout
 docs: update setup instructions
 ```
 
-Avoid vague messages such as:
-
-```text
-update
-changes
-stuff
-fix
-new things
-```
+Do not use vague messages like `update`, `changes`, or `fix`.
 
 ---
 
 ## Pull Requests
 
-A pull request should explain:
+Your PR should explain:
 
-### What changed?
+**What changed?** — describe what you did.
 
-Describe the implementation.
+**Why?** — explain the problem or feature.
 
-### Why?
-
-Explain the problem or feature being addressed.
-
-### How was it tested?
-
-List the checks you performed.
+**How was it tested?** — list what you checked.
 
 Example:
 
@@ -480,132 +295,88 @@ What changed?
 Added server-controlled countdown timer.
 
 Why?
-The Game Board needs to display the same timer value as the Controller.
+The Game Board needs to show the same timer as the Controller.
 
 Testing:
 - npm run build
-- Tested Controller + Board in separate browser windows
-- Tested timer start
-- Tested pause
-- Tested reset
+- Tested Controller + Board in separate windows
+- Tested timer start, pause, and reset
 ```
 
 ---
 
 ## Pull Request Checklist
 
-Before submitting a pull request:
-
-- [ ] The project starts successfully.
-- [ ] `npm run build` succeeds.
-- [ ] No unnecessary files are committed.
-- [ ] No secrets are committed.
-- [ ] `.env` files are not committed.
-- [ ] Socket.IO changes were tested with multiple clients.
-- [ ] Controller changes were tested.
-- [ ] Host changes were tested where applicable.
-- [ ] Game Board changes were tested where applicable.
-- [ ] Existing functionality still works.
-- [ ] Code is reasonably organized.
-- [ ] Documentation was updated when necessary.
+- [ ] Project starts with no errors
+- [ ] `npm run build` succeeds
+- [ ] No unnecessary files committed
+- [ ] No secrets committed
+- [ ] `.env` not committed
+- [ ] Socket changes tested with multiple clients
+- [ ] Controller changes tested
+- [ ] Host changes tested where needed
+- [ ] Game Board changes tested where needed
+- [ ] Existing features still work
+- [ ] Code is clean and organised
+- [ ] Docs updated if needed
 
 ---
 
 ## Reporting Bugs
 
-When reporting a bug, include:
+Include:
 
-- What you expected to happen
+- What you expected
 - What actually happened
 - Steps to reproduce
 - Browser and version
 - Node.js version
-- Operating system
-- Relevant console/server errors
-- Screenshots when useful
-
-For real-time issues, mention which clients were open:
-
-```text
-Controller: Open
-Host: Open
-Game Board: Open
-```
+- OS
+- Console or server errors
+- Screenshots if useful
 
 ---
 
 ## Feature Requests
 
-Feature requests are welcome.
+A good request explains:
 
-A useful feature request should explain:
-
-1. What problem does the feature solve?
+1. What problem does it solve?
 2. Who uses it?
 3. How would it work?
-4. How does it fit the existing game-show workflow?
-5. Is it required during a live event or mainly a configuration feature?
+4. How does it fit the game-show workflow?
+5. Is it needed during a live event or only for setup?
 
-Features that improve live reliability and operator speed are especially valuable.
+Features that improve live speed and reliability are the most useful.
 
 ---
 
 ## Security
 
-Do not report security vulnerabilities through public issues.
+Do not report security issues in public GitHub issues.
 
-Please follow the instructions in:
-
-```text
-SECURITY.md
-```
+Follow the instructions in `SECURITY.md`.
 
 ---
 
 ## Documentation
 
-When adding a feature that changes how the project is installed, configured, operated, or developed, update the relevant documentation.
-
-The main documentation is:
-
-```text
-README.md
-```
-
-Security-related guidance belongs in:
-
-```text
-SECURITY.md
-```
-
----
-
-## Keeping Contributions Focused
-
-Rally Board Pilot is intended to remain easy to operate during a live event.
-
-When proposing a feature, ask:
-
-> Does this make the live game easier, clearer, faster, or more reliable?
-
-If the answer is no, the feature may belong outside the core live-control experience.
+If your change affects how RBP is installed, set up, used, or developed — update the relevant doc file.
 
 ---
 
 ## Code of Conduct
 
-Contributors are expected to communicate respectfully and professionally.
+Be respectful and professional.
 
-Harassment, discrimination, personal attacks, malicious behavior, and intentionally disruptive contributions are not acceptable.
+Harassment, personal attacks, and deliberately disruptive contributions are not acceptable.
 
 ---
 
 ## License
 
-By contributing to Rally Board Pilot, you agree that your contributions may be incorporated into the project under the project's applicable license and contribution terms.
-
-If the project license changes, contributors should review the updated licensing terms before submitting substantial contributions.
+By contributing, you agree your work may be used under the project's license.
 
 ---
 
-Thank you for helping improve Rally Board Pilot.
+Thank you for helping improve RBP.

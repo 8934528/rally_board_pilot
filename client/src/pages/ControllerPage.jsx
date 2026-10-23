@@ -1,16 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import {
-  GAME_EVENTS
-} from '../constants/gameEvents';
+import { GAME_EVENTS } from '../constants/gameEvents';
 
-import {
-  useGameState
-} from '../hooks/useGameState';
+import { useGameState } from '../hooks/useGameState';
 
-import {
-  useController
-} from '../hooks/useController';
+import { useController } from '../hooks/useController';
 
 import ControllerSidebar from '../components/controller/ControllerSidebar';
 import ScoreControls from '../components/controller/ScoreControls';
@@ -28,8 +22,7 @@ function ControllerPage() {
     gameState
   } = useGameState();
 
-  const controller =
-    useController(socket);
+  const controller = useController(socket);
 
   const [
     activities,
@@ -108,15 +101,11 @@ function ControllerPage() {
 
           <span
             className={
-              connected
-                ? 'controller-status-dot online'
-                : 'controller-status-dot offline'
+              connected ? 'controller-status-dot online' : 'controller-status-dot offline'
             }
           />
 
-          {connected
-            ? 'SERVER CONNECTED'
-            : 'SERVER OFFLINE'}
+          {connected ? 'SERVER CONNECTED' : 'SERVER OFFLINE'}
 
         </div>
 
@@ -153,7 +142,7 @@ function ControllerPage() {
               </h1>
 
               <p>
-                Direct the game board in real time.
+                Direct the game board live
               </p>
             </div>
 

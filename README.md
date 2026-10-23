@@ -1,8 +1,8 @@
 # Rally Board Pilot
 
-Rally Board Pilot is a live two-team game-show control and scoreboard system built for real-time event control.
+RBP is a two-team game-show control and scoreboard system.
 
-It provides separate interfaces for the **Controller**, **Host**, and public **Game Board**, with live synchronization powered by Socket.IO.
+It gives you three separate screens: **Controller**, **Host**, and **Game Board**. They all stay in sync using Socket.IO.
 
 ---
 
@@ -18,17 +18,13 @@ It provides separate interfaces for the **Controller**, **Host**, and public **G
 
 ---
 
-## Overview
+## What It Does
 
-Rally Board Pilot is designed as a live game-show control system rather than a traditional administration dashboard.
+RBP has three screens:
 
-The system separates game operation into three main interfaces:
-
-- **Controller** — full control of the live game.
-- **Host** — limited controls for the person running the game.
-- **Game Board** — public-facing display for players and audience.
-
-All interfaces communicate with the same live game state through the Node.js server and Socket.IO.
+- **Controller** — full control of the game
+- **Host** — simple controls for the person running the game
+- **Game Board** — the public display for players and the audience
 
 ---
 
@@ -37,7 +33,6 @@ All interfaces communicate with the same live game state through the Node.js ser
 ```text
                          ┌─────────────────────┐
                          │     Controller      │
-                         │                     │
                          │  Full Game Control  │
                          └──────────┬──────────┘
                                     │
@@ -45,23 +40,19 @@ All interfaces communicate with the same live game state through the Node.js ser
                                     ▼
                          ┌─────────────────────┐
                          │    Node / Express   │
-                         │                     │
-                         │   Live Game State   │
-                         │                     │
-                         │      Socket.IO      │
+                         │   Game State        │
+                         │   Socket.IO         │
                          └──────────┬──────────┘
                                     │
                                     │ Socket.IO
                                     ▼
                          ┌─────────────────────┐
                          │     Game Board      │
-                         │                     │
                          │   Public Display    │
                          └─────────────────────┘
 
                          ┌─────────────────────┐
                          │        Host         │
-                         │                     │
                          │  Limited Controls   │
                          └──────────┬──────────┘
                                     │
@@ -72,7 +63,7 @@ All interfaces communicate with the same live game state through the Node.js ser
                          └─────────────────────┘
 ```
 
-### Live State Flow
+### How State Updates Flow
 
 ```text
 Controller / Host
@@ -96,67 +87,50 @@ All Connected Clients
 
 ---
 
-## Application Modes
+## The Three Screens
 
-### Controller
+### Controller — `/controller`
 
-The Controller is the main game operator interface.
+The main operator screen. Full control.
 
-```text
-/controller
-```
+**What you can do:**
 
-#### Controller Features
-
-- Team scores
 - Add and subtract points
-- Team names
-- Team colours
-- Round management
-- Game status
-- Board page control
-- Theme control
-- Game reset
-- Live board preview
-- Activity log
-- Timer controls
-- Spin wheel controls
-- Announcements
-- Winner display
+- Change team names and colours
+- Manage rounds
+- Change game status
+- Switch board pages
+- Change the theme
+- Reset the game
+- View the live board preview
+- View the activity log
+- Control the timer
+- Control the spin wheel
+- Send announcements
+- Show the winner
 
 ---
 
-### Host
+### Host — `/host`
 
-The Host interface provides simplified controls for the person actively presenting or running the game.
+A simpler screen for the person presenting the game live.
 
-```text
-/host
-```
+**What you can do:**
 
-#### Host Features
-
-- Live score controls
+- Score controls
 - Round controls
 - Game status controls
 - Spin wheel controls
-- Limited game actions
 
-The Host does not need access to the full Controller configuration.
+The Host does not need the full Controller setup.
 
 ---
 
-### Game Board
+### Game Board — `/board`
 
-The Game Board is the public-facing display.
+The public display. Put this on a projector, TV, or big screen.
 
-```text
-/board
-```
-
-It is designed to run on a projector, television, second monitor, or large display.
-
-#### Board Modes
+**Board pages:**
 
 - Scoreboard
 - Round Intro
@@ -165,77 +139,19 @@ It is designed to run on a projector, television, second monitor, or large displ
 - Announcement
 - Winner
 
-The Game Board receives its state from the server and updates automatically when the Controller or Host makes changes.
-
----
-
-## Board Pages
-
-### Scoreboard
-
-Displays:
-
-- Team names
-- Team colours
-- Team scores
-- Current round
-- Game status
-
-### Round Intro
-
-Displays the current round and round title in a large presentation format.
-
-### Timer
-
-Displays the live countdown timer.
-
-### Spin Wheel
-
-Displays the configured wheel entries and the selected result.
-
-### Announcement
-
-Displays large custom announcements for the audience.
-
-### Winner
-
-Displays the winning team and final result.
-
----
-
-## Real-Time Communication
-
-Rally Board Pilot uses **Socket.IO** for live communication between the Controller, Host, Server, and Game Board.
-
-```text
-Controller
-    │
-    │ SCORE_ADJUST
-    ▼
-Socket.IO Server
-    │
-    │ Update game state
-    ▼
-Game Board
-    │
-    │ Render new score
-    ▼
-Audience Display
-```
-
-When a score changes on the Controller, the Game Board updates without requiring a browser refresh.
+The board updates automatically when the Controller or Host makes a change.
 
 ---
 
 ## Requirements
 
-Before running Rally Board Pilot, install:
+Before running RBP, you need:
 
 - Node.js
 - npm
 - Git
 
-Verify the installation:
+Check your versions:
 
 ```bash
 node --version
@@ -246,7 +162,7 @@ npm --version
 
 ## Installation
 
-Clone the repository:
+Clone the repo:
 
 ```bash
 git clone <your-repository-url>
@@ -261,11 +177,15 @@ npm install
 
 ---
 
-## Environment Configuration
+## Environment Setup
 
-Create a local `.env` file when required.
+Copy the example file:
 
-Example:
+```bash
+cp .env.example .env
+```
+
+The `.env` file looks like this:
 
 ```env
 PORT=3001
@@ -273,100 +193,59 @@ CLIENT_ORIGIN=http://localhost:5173
 VITE_SERVER_URL=http://localhost:3001
 ```
 
-The project also includes:
-
-```text
-.env.example
-```
-
-Do not commit your local `.env` file to Git.
+Do not commit your `.env` file to Git.
 
 ---
 
-## Development
+## Running the App
 
-Start the complete development environment:
+### Quickest Way — Makefile
+
+```bash
+make dev
+```
+
+### Or with npm
 
 ```bash
 npm run dev
 ```
 
-### Controller
+---
 
-```text
-http://localhost:5173/controller
-```
+## URLs
 
-### Host
-
-```text
-http://localhost:5173/host
-```
-
-### Game Board
-
-```text
-http://localhost:5173/board
-```
-
-### Server Health
-
-```text
-http://localhost:3001/api/health
-```
-
-### Current Game State
-
-```text
-http://localhost:3001/api/game-state
-```
+| Screen             | URL                                       |
+|--------------------|-------------------------------------------|
+| Landing page       | `http://localhost:5173`                   |
+| Controller         | `http://localhost:5173/controller`        |
+| Host               | `http://localhost:5173/host`              |
+| Game Board         | `http://localhost:5173/board`             |
+| Server health      | `http://localhost:3001/api/health`        |
+| Game state         | `http://localhost:3001/api/game-state`    |
 
 ---
 
-## Development Workflow
+## Workflow
 
 ```text
 1. Start the server
        ↓
-2. Open Controller
+2. Open Game Board on the display screen
        ↓
-3. Open Host if required
+3. Open Controller in your browser
        ↓
-4. Open Game Board on the display
+4. Set up teams
        ↓
-5. Configure teams
+5. Pick the active board page
        ↓
-6. Select the active board page
+6. Start the game
        ↓
-7. Start the game
+7. Control scores and rounds
        ↓
-8. Control scores and rounds
+8. Use Timer, Wheel, or Announcements
        ↓
-9. Use Timer / Wheel / Announcements
-       ↓
-10. Display the Winner
-```
-
----
-
-## Production Build
-
-Build the React application:
-
-```bash
-npm run build
-```
-
-Preview the production build:
-
-```bash
-npm run preview
-```
-
-Start the Node.js server:
-
-```bash
-npm start
+9. Show the Winner
 ```
 
 ---
@@ -378,8 +257,6 @@ npm start
 ```http
 GET /api/health
 ```
-
-Example response:
 
 ```json
 {
@@ -395,15 +272,13 @@ Example response:
 GET /api/game-state
 ```
 
-Returns the current live game state held by the server.
+Returns the current game state from the server.
 
 ---
 
-## Live Game Actions
+## Socket Events
 
-The application communicates using Socket.IO events.
-
-Examples include:
+RBP uses these Socket.IO events:
 
 ```text
 SCORE_ADJUST
@@ -424,67 +299,74 @@ ANNOUNCEMENT_CLEAR
 RESET_GAME
 ```
 
-The server validates actions, updates the game state, and broadcasts the updated state to connected clients.
+---
+
+## Production Build
+
+Build the app:
+
+```bash
+npm run build
+```
+
+Preview it:
+
+```bash
+npm run preview
+```
+
+Start the server:
+
+```bash
+npm start
+```
 
 ---
 
-## Design
+## Design Goal
 
-Rally Board Pilot is designed to feel like a **broadcast/game-show control room**, not a standard CRUD dashboard.
+RBP is designed to feel like a **broadcast / game-show control room** — not a normal admin panel.
 
-The interface focuses on:
+It focuses on:
 
-- Fast live controls
-- Large readable game information
+- Fast controls
+- Big, easy-to-read game info
 - Clear team identity
-- Immediate visual feedback
-- Presentation-ready board pages
-- Minimal friction during a live event
+- Instant feedback
+- Clean display pages
+- No friction during a live event
 - Separation between operator controls and public display
 
-The Game Board remains clean and audience-focused while the Controller provides the detailed controls required by the operator.
+---
+
+## Version Note
+
+RBP V1 uses **in-memory state** — no database needed.
+
+The game state is lost when the server restarts. Future versions may add persistence.
 
 ---
 
-## Version
-
-Version 1 intentionally uses **in-memory state**.
-
-No database is required.
-
-This keeps the initial system simple and fast while the real-time game engine is being developed.
-
-### Important
-
-The current game state is lost when the Node.js server restarts.
-
-Future versions may add persistent storage if required.
-
----
-
-## Future Improvements
-
-Potential future features include:
+## Future Plans
 
 - Persistent game sessions
 - Multiple game rooms
 - Room codes
 - Host permission management
 - Undo / redo
-- Game history
 - Saved themes
 - Saved wheel presets
-- Advanced animations
 - Sound effects
-- Fullscreen presentation mode
+- Fullscreen mode
 - Keyboard shortcuts
 - Multiple teams
-- Question / challenge management
-- Game statistics
-- Event/session export
+- Question management
+- Game stats
 - Authentication
-- Database persistence
+- Database
 
 ---
 
 ## License
+
+See `LICENSE` file.

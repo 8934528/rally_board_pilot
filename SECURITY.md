@@ -1,260 +1,168 @@
 # Security Policy
 
-## Overview
-
-game-show control and scoreboard system built with React, Vite, Node.js, Express, and Socket.IO
-
-security is important because the application can control live game information, including scores, team configuration, timers, announcements, and public display content
-
-this document explains how to report security vulnerabilities and provides basic security expectations for contributors and deployments
-
----
-
 ## Supported Versions
 
-Rally Board Pilot is currently under active development.
-
-| Version         | Supported |
-|-----------------|-----------|
-| V1.x            | Yes       |
-| Older versions  | No        |
-
-Because this project is currently in development, security support may change as the application evolves.
+| Version | Supported |
+|---------|-----------|
+| V1.x    | Yes       |
+| Older   | No        |
 
 ---
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please **do not open a public GitHub issue** containing sensitive details.
+If you find a security issue, **do not open a public GitHub issue**.
 
-Instead, report the issue privately to the project maintainer.
+Report it privately to the project maintainer instead.
 
-When reporting a vulnerability, please include:
+Please include:
 
-- A clear description of the vulnerability
-- The affected component or file
-- Steps to reproduce the issue
-- The potential impact
-- Any proof-of-concept information that can safely be shared
-- Suggested mitigation, if known
+- A clear description of the issue
+- Which file or part of the app is affected
+- Steps to reproduce it
+- The possible impact
+- Any proof-of-concept (only what is safe to share)
+- A suggested fix, if you have one
 
-Please give the maintainer reasonable time to investigate and address the issue before publicly disclosing the vulnerability.
+Give the maintainer time to look into it before you tell anyone else.
 
 ---
 
 ## Security Expectations
 
-Contributors should follow these principles when working on Rally Board Pilot.
+### Do Not Commit Secrets
 
-### Never Commit Secrets
-
-Do not commit:
+Never commit:
 
 - Passwords
 - API keys
 - Access tokens
 - Private keys
-- Authentication secrets
 - Production credentials
-- Private environment configuration
+- Private config values
 
-Use environment variables instead.
+Use environment variables. Local `.env` files must not be committed.
 
-Local environment files such as:
-
-```text
-.env
-.env.local
-.env.production.local
-```
-
-must not be committed to the repository.
-
-Use `.env.example` to document required environment variables without exposing their values.
-
----
-
-## Environment Variables
-
-```env
-PORT=3001
-CLIENT_ORIGIN=http://localhost:5173
-VITE_SERVER_URL=http://localhost:3001
-```
-
-Production credentials and private configuration must be stored outside the source code.
+Use `.env.example` to show what variables are needed, without the real values.
 
 ---
 
 ## Input Validation
 
-All client-provided game actions should be treated as untrusted input.
+The server should validate all data that comes from clients.
 
-The server should validate:
+This includes:
 
-- Team identifiers
+- Team IDs and names
 - Score values
-- Score adjustment amounts
-- Team names
-- Team colours
-- Round numbers
-- Round names
+- Round numbers and names
 - Board page names
 - Timer values
 - Wheel entries
 - Announcement content
-- Theme configuration
+- Theme config
+- Team colours
 
-The server should never rely solely on client-side validation.
-
----
-
-## Socket.IO Security
-
-Socket.IO events can modify live game state.
-
-Server-side event handlers should therefore:
-
-1. Validate incoming data.
-2. Validate the requested action.
-3. Reject malformed payloads.
-4. Restrict unsupported actions.
-5. Avoid trusting client-provided permissions.
-6. Prevent unexpected state mutations.
-
-Example:
-
-```text
-Client
-  |
-  | Untrusted event
-  v
-Socket.IO Server
-  |
-  | Validate
-  v
-Game State
-```
+Never rely only on client-side checks.
 
 ---
 
-## API Security
+## Socket.IO
 
-API endpoints should validate incoming requests and avoid exposing information that is not required by clients.
+Socket.IO events can change the live game state.
 
-For example:
+Server handlers should:
 
-```text
-GET /api/health
-GET /api/game-state
-```
+1. Validate the incoming data
+2. Check that the action is allowed
+3. Reject bad data
+4. Block unsupported actions
+5. Not trust permissions sent by the client
+6. Prevent unexpected state changes
 
-should only expose the information necessary for their intended purpose.
+---
 
-If authentication or authorization is introduced in a future version, sensitive endpoints should require appropriate authorization.
+## API
+
+API endpoints should only return the data they need to return.
+
+If authentication is added in a future version, sensitive endpoints must require it.
 
 ---
 
 ## CORS
 
-The development environment uses a restricted client origin such as:
+Development uses a restricted origin:
 
 ```text
 http://localhost:5173
 ```
 
-Production deployments should configure CORS explicitly for the trusted frontend origin.
-
-Avoid using unrestricted origins such as:
-
-```text
-*
-```
-
-for sensitive production deployments.
+Production deployments should set CORS to the specific frontend URL. Do not use `*` for sensitive deployments.
 
 ---
 
 ## XSS Prevention
 
-User-controlled content such as:
+User content — such as team names, announcements, and wheel entries — must not be shown as raw HTML unless it has been sanitised.
 
-- Announcements
-- Team names
-- Round names
-- Wheel entries
-
-must not be rendered as raw HTML unless it has been explicitly sanitized.
-
-React's normal text rendering should be preferred over unsafe HTML injection.
-
-Avoid unnecessary use of:
-
-```jsx
-dangerouslySetInnerHTML
-```
+Use React's normal text rendering. Avoid `dangerouslySetInnerHTML`.
 
 ---
 
-## Dependency Security
+## Dependencies
 
-Keep project dependencies reasonably up to date.
+Keep dependencies reasonably up to date.
 
-Before committing dependency changes, review:
+Before committing dependency changes, run:
 
 ```bash
 npm audit
 ```
 
-Contributors should avoid introducing unnecessary dependencies.
+When adding a new package, consider:
 
-When adding a dependency, consider:
-
-- Maintenance status
-- Security history
-- Package size
-- License
-- Whether the functionality can reasonably be implemented without it
+- Is it actively maintained?
+- Does it have a good security record?
+- Is it really needed?
+- What is its licence?
 
 ---
 
-## Production Deployment
+## Production Checklist
 
 For production deployments:
 
-- Use HTTPS.
-- Restrict CORS.
-- Protect server environment variables.
-- Do not expose development credentials.
-- Keep Node.js and dependencies updated.
-- Use appropriate firewall rules.
-- Do not expose unnecessary server ports.
-- Consider authentication before exposing Controller or Host interfaces publicly.
-- Consider rate limiting for public-facing APIs and Socket.IO connections.
+- Use HTTPS
+- Restrict CORS to your frontend URL
+- Protect environment variables
+- Do not expose development credentials
+- Keep Node.js and packages updated
+- Use firewall rules
+- Do not expose server ports you do not need
+- Add authentication before making Controller or Host public
+- Consider rate limiting on public APIs and Socket.IO
 
 ---
 
-## Current V1 Security Limitations
+## V1 Limitations
 
-Rally Board Pilot V1 intentionally focuses on the real-time game engine and uses in-memory state.
+RBP V1 uses in-memory state and has no authentication system.
 
-Current limitations may include:
+Current limitations:
 
-- No persistent authentication system
 - No user accounts
-- No role-based authentication
+- No role-based access control
 - No database
-- No persistent audit storage
-- Controller and Host access are currently application-level concepts rather than full identity-based authorization
+- No audit logs
+- Controller and Host access is application-level only
 
-Therefore, V1 should be treated as a controlled/private event application rather than a hardened public internet service.
+V1 is best used as a **private or controlled-event tool**, not a public internet service.
 
 ---
 
 ## Responsible Disclosure
 
-Please allow the maintainer reasonable time to investigate reported vulnerabilities.
+Please allow time for a fix before making a vulnerability public.
 
-Security reports should not be publicly disclosed before a fix or mitigation has been coordinated where practical.
-
-Thank you for helping keep Rally Board Pilot secure.
+Thank you for helping keep RBP secure.

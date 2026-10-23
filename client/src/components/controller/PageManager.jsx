@@ -15,15 +15,13 @@ function PageManager({
             type="button"
             key={page.id}
             className={
-              activePage === page.id
-                ? 'sidebar-button active'
-                : 'sidebar-button'
+              activePage === page.id ? 'sidebar-button active' : 'sidebar-button'
             }
             onClick={() =>
               onChange(page.id)
-            }
-          >
-            <span>{page.icon}</span>
+            }>
+              
+            <i className={`bi ${page.icon}`} />
 
             {page.label}
           </button>

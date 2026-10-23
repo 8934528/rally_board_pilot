@@ -1,10 +1,10 @@
 import {
   BrowserRouter,
-  Navigate,
   Route,
   Routes
 } from 'react-router-dom';
 
+import LandingPage from './pages/LandingPage';
 import BoardPage from './pages/BoardPage';
 import ControllerPage from './pages/ControllerPage';
 import HostPage from './pages/HostPage';
@@ -15,45 +15,19 @@ function App() {
 
       <Routes>
 
-        <Route
-          path="/"
-          element={
-            <Navigate
-              to="/controller"
-              replace
-            />
-          }
+        <Route path="/" element={<LandingPage />}
         />
 
-        <Route
-          path="/controller"
-          element={
-            <ControllerPage />
-          }
+        <Route path="/controller" element={<ControllerPage />}
         />
 
-        <Route
-          path="/host"
-          element={
-            <HostPage />
-          }
+        <Route path="/host" element={<HostPage />}
         />
 
-        <Route
-          path="/board"
-          element={
-            <BoardPage />
-          }
+        <Route path="/board" element={<BoardPage />}
         />
 
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to="/controller"
-              replace
-            />
-          }
+        <Route path="*" element={<LandingPage />}
         />
 
       </Routes>

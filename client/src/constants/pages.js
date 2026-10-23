@@ -11,31 +11,31 @@ export const BOARD_PAGE_LIST = [
   {
     id: BOARD_PAGES.SCOREBOARD,
     label: 'Scoreboard',
-    icon: '▣'
+    icon: 'bi-bar-chart-line'
   },
   {
     id: BOARD_PAGES.ROUND,
     label: 'Round Intro',
-    icon: '◉'
+    icon: 'bi-play-circle'
   },
   {
     id: BOARD_PAGES.TIMER,
     label: 'Timer',
-    icon: '◷'
+    icon: 'bi-stopwatch'
   },
   {
     id: BOARD_PAGES.WHEEL,
     label: 'Spin Wheel',
-    icon: '◎'
+    icon: 'bi-arrow-repeat'
   },
   {
     id: BOARD_PAGES.ANNOUNCEMENT,
     label: 'Announcement',
-    icon: '◆'
+    icon: 'bi-megaphone'
   },
   {
     id: BOARD_PAGES.WINNER,
     label: 'Winner',
-    icon: '★'
+    icon: 'bi-trophy'
   }
 ];

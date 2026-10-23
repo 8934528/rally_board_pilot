@@ -82,3 +82,179 @@ button {
 
   color: transparent;
 }
+
+.landing-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 40px 20px;
+  background: #05070b;
+}
+
+.landing-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.landing-logo {
+  font-size: 3rem;
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  background: linear-gradient(135deg, #ff4d6d, #4d7cfe);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #f0f4ff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.landing-tagline {
+  font-size: 0.95rem;
+  color: #7c8aaa;
+  margin: 0;
+}
+
+.landing-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.landing-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 22px 24px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+  color: #f0f4ff;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+.landing-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+  color: #fff;
+  text-decoration: none;
+}
+
+.landing-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.controller-card .landing-card-icon {
+  background: rgba(77, 124, 254, 0.15);
+  color: #4d7cfe;
+}
+
+.host-card .landing-card-icon {
+  background: rgba(255, 77, 109, 0.15);
+  color: #ff4d6d;
+}
+
+.board-card .landing-card-icon {
+  background: rgba(56, 211, 159, 0.15);
+  color: #38d39f;
+}
+
+.landing-card-body {
+  flex: 1;
+}
+
+.landing-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: 0.01em;
+}
+
+.landing-card-desc {
+  font-size: 0.82rem;
+  color: #7c8aaa;
+  line-height: 1.5;
+}
+
+.landing-card-arrow {
+  font-size: 1rem;
+  color: #3d4a68;
+  transition: color 0.18s ease;
+}
+
+.landing-card:hover .landing-card-arrow {
+  color: #7c8aaa;
+}
+
+.landing-footer {
+  font-size: 0.78rem;
+  color: #3d4a68;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+
+.quick-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.quick-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.12s ease;
+}
+
+.quick-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+}
+
+.live-btn {
+  background: #38d39f;
+  color: #05070b;
+}
+
+.pause-btn {
+  background: #f59e0b;
+  color: #05070b;
+}
+
+.reset-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f0f4ff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
