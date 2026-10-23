@@ -1,0 +1,31 @@
+{
+  "name": "rally_board_pilot",
+  "version": "1.0.0",
+  "description": "Rally Board Pilot - Live Game Control and Scoreboard System",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "vite --config client/vite.config.js",
+    "dev:server": "node server/index.js",
+    "build": "vite build --config client/vite.config.js",
+    "preview": "vite preview --config client/vite.config.js",
+    "start": "node server/index.js",
+    "test": "echo \"No tests configured yet\""
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.5",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.1.0",
+    "concurrently": "^9.2.1",
+    "vite": "^7.1.12"
+  }
+}
