@@ -1,123 +1,84 @@
 import { useEffect, useState } from 'react';
 
-import { useSocket } from '../hooks/useSocket';
+import {
+  GAME_EVENTS
+} from '../constants/gameEvents';
 
-const initialGameState = {
-  status: 'READY',
+import {
+  useGameState
+} from '../hooks/useGameState';
 
-  round: {
-    number: 1,
-    name: 'Opening Round'
-  },
+import {
+  useController
+} from '../hooks/useController';
 
-  teams: {
-    A: {
-      name: 'Team A',
-      score: 0,
-      color: '#FF4D6D'
-    },
-
-    B: {
-      name: 'Team B',
-      score: 0,
-      color: '#4D7CFE'
-    }
-  },
-
-  board: {
-    activePage: 'scoreboard',
-
-    theme: {
-      type: 'gradient',
-      primary: '#141E30',
-      secondary: '#243B55',
-      direction: '135deg'
-    }
-  }
-};
+import ControllerSidebar from '../components/controller/ControllerSidebar';
+import ScoreControls from '../components/controller/ScoreControls';
+import TeamConfig from '../components/controller/TeamConfig';
+import QuickActions from '../components/controller/QuickActions';
+import BoardDirector from '../components/controller/BoardDirector';
+import BoardPreview from '../components/controller/BoardPreview';
+import ThemeEditor from '../components/controller/ThemeEditor';
+import ActivityLog from '../components/controller/ActivityLog';
 
 function ControllerPage() {
-  const { socket, connected } = useSocket();
+  const {
+    socket,
+    connected,
+    gameState
+  } = useGameState();
 
-  const [gameState, setGameState] = useState(initialGameState);
+  const controller =
+    useController(socket);
 
-  const [teamAName, setTeamAName] = useState('Team A');
-  const [teamBName, setTeamBName] = useState('Team B');
-
-  const [teamAColor, setTeamAColor] = useState('#FF4D6D');
-  const [teamBColor, setTeamBColor] = useState('#4D7CFE');
-
-  const [roundNumber, setRoundNumber] = useState(1);
-  const [roundName, setRoundName] = useState('Opening Round');
+  const [
+    activities,
+    setActivities
+  ] = useState([]);
 
   useEffect(() => {
-    const handleGameStateUpdate = (state) => {
-      setGameState(state);
-
-      setTeamAName(state.teams.A.name);
-      setTeamBName(state.teams.B.name);
-
-      setTeamAColor(state.teams.A.color);
-      setTeamBColor(state.teams.B.color);
-
-      setRoundNumber(state.round.number);
-      setRoundName(state.round.name);
-    };
-
-    socket.on('game:state:update', handleGameStateUpdate);
-
-    if (socket.connected) {
-      socket.emit('game:state:request');
+    if (!gameState?.meta?.lastAction) {
+      return;
     }
 
-    return () => {
-      socket.off('game:state:update', handleGameStateUpdate);
+    const entry = {
+      id:
+        gameState.meta.lastActionAt ||
+        Date.now(),
+
+      message:
+        gameState.meta.lastAction,
+
+      time: new Date(
+        gameState.meta.lastActionAt ||
+        Date.now()
+      ).toLocaleTimeString()
     };
-  }, [socket]);
 
-  const changeScore = (team, points) => {
-    const event =
-      points >= 0
-        ? 'game:score:add'
-        : 'game:score:subtract';
+    setActivities(
+      (current) => [
+        entry,
+        ...current
+      ].slice(0, 15)
+    );
+  }, [
+    gameState?.meta?.lastAction,
+    gameState?.meta?.lastActionAt
+  ]);
 
-    socket.emit(event, {
-      team,
-      points: Math.abs(points)
-    });
-  };
+  if (!gameState) {
+    return (
+      <div className="controller-loading">
+        <strong>RBP</strong>
+        <span>
+          Connecting to game server...
+        </span>
+      </div>
+    );
+  }
 
-  const updateTeam = (team) => {
-    socket.emit('game:team:update', {
-      team,
-      name:
-        team === 'A'
-          ? teamAName
-          : teamBName,
-      color:
-        team === 'A'
-          ? teamAColor
-          : teamBColor
-    });
-  };
-
-  const updateRound = () => {
-    socket.emit('game:round:update', {
-      number: Number(roundNumber),
-      name: roundName
-    });
-  };
-
-  const changeBoardPage = (page) => {
-    socket.emit('game:board:page', {
-      page
-    });
-  };
-
-  const setGameStatus = (status) => {
-    socket.emit('game:status:update', {
-      status
-    });
+  const handleReset = () => {
+    controller.resetGame();
   };
 
   return (
@@ -126,6 +87,7 @@ function ControllerPage() {
       <header className="controller-topbar">
 
         <div className="controller-brand">
+
           <div className="controller-logo">
             RBP
           </div>
@@ -139,141 +101,43 @@ function ControllerPage() {
               GAME CONTROL
             </div>
           </div>
+
         </div>
 
         <div className="controller-status">
+
           <span
-            className={`controller-status-dot ${
-              connected ? 'online' : 'offline'
-            }`}
+            className={
+              connected
+                ? 'controller-status-dot online'
+                : 'controller-status-dot offline'
+            }
           />
 
-          <span>
-            {connected
-              ? 'SERVER CONNECTED'
-              : 'SERVER OFFLINE'}
-          </span>
+          {connected
+            ? 'SERVER CONNECTED'
+            : 'SERVER OFFLINE'}
+
         </div>
 
       </header>
 
       <div className="controller-layout">
 
-        <aside className="controller-sidebar">
-
-          <div className="sidebar-section">
-            <div className="sidebar-heading">
-              BOARD
-            </div>
-
-            <button
-              className={
-                gameState.board.activePage === 'scoreboard'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('scoreboard')}
-            >
-              <span>▣</span>
-              Scoreboard
-            </button>
-
-            <button
-              className={
-                gameState.board.activePage === 'round'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('round')}
-            >
-              <span>◉</span>
-              Round Intro
-            </button>
-
-            <button
-              className={
-                gameState.board.activePage === 'timer'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('timer')}
-            >
-              <span>◷</span>
-              Timer
-            </button>
-
-            <button
-              className={
-                gameState.board.activePage === 'wheel'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('wheel')}
-            >
-              <span>◎</span>
-              Spin Wheel
-            </button>
-
-            <button
-              className={
-                gameState.board.activePage === 'announcement'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('announcement')}
-            >
-              <span>◆</span>
-              Announcement
-            </button>
-
-            <button
-              className={
-                gameState.board.activePage === 'winner'
-                  ? 'sidebar-button active'
-                  : 'sidebar-button'
-              }
-              onClick={() => changeBoardPage('winner')}
-            >
-              <span>★</span>
-              Winner
-            </button>
-          </div>
-
-          <div className="sidebar-section">
-            <div className="sidebar-heading">
-              GAME STATUS
-            </div>
-
-            <button
-              className="status-control ready"
-              onClick={() => setGameStatus('READY')}
-            >
-              READY
-            </button>
-
-            <button
-              className="status-control live"
-              onClick={() => setGameStatus('LIVE')}
-            >
-              LIVE
-            </button>
-
-            <button
-              className="status-control paused"
-              onClick={() => setGameStatus('PAUSED')}
-            >
-              PAUSED
-            </button>
-
-            <button
-              className="status-control finished"
-              onClick={() => setGameStatus('FINISHED')}
-            >
-              FINISHED
-            </button>
-          </div>
-
-        </aside>
+        <ControllerSidebar
+          activePage={
+            gameState.board.activePage
+          }
+          status={
+            gameState.status
+          }
+          onPageChange={
+            controller.changePage
+          }
+          onStatusChange={
+            controller.updateStatus
+          }
+        />
 
         <main className="controller-main">
 
@@ -289,261 +153,100 @@ function ControllerPage() {
               </h1>
 
               <p>
-                Everything you change here is pushed
-                live to the Game Board.
+                Direct the game board in real time.
               </p>
             </div>
 
-            <div className="active-page-indicator">
-              <span>ON AIR</span>
-              <strong>
-                {gameState.board.activePage.toUpperCase()}
-              </strong>
-            </div>
+            <BoardDirector
+              activePage={
+                gameState.board.activePage
+              }
+              status={
+                gameState.status
+              }
+            />
 
           </div>
 
+          <QuickActions
+            onLive={() =>
+              controller.updateStatus('LIVE')
+            }
+            onPause={() =>
+              controller.updateStatus('PAUSED')
+            }
+            onReset={handleReset}
+          />
+
           <section className="control-grid">
 
-            {/* TEAM A */}
+            <ScoreControls
+              team="A"
+              teamData={
+                gameState.teams.A
+              }
+              onAdd={
+                controller.addScore
+              }
+              onSubtract={
+                controller.subtractScore
+              }
+            />
 
-            <article className="control-card">
-
-              <div className="control-card-header">
-
-                <div>
-                  <span className="team-badge team-a-badge">
-                    TEAM A
-                  </span>
-
-                  <h2>
-                    {gameState.teams.A.name}
-                  </h2>
-                </div>
-
-                <div
-                  className="color-preview"
-                  style={{
-                    backgroundColor:
-                      gameState.teams.A.color
-                  }}
-                />
-              </div>
-
-              <div className="live-score">
-                {gameState.teams.A.score}
-              </div>
-
-              <div className="score-buttons">
-
-                <button
-                  className="score-button minus"
-                  onClick={() => changeScore('A', -1)}
-                >
-                  −1
-                </button>
-
-                <button
-                  className="score-button minus"
-                  onClick={() => changeScore('A', -5)}
-                >
-                  −5
-                </button>
-
-                <button
-                  className="score-button major"
-                  onClick={() => changeScore('A', -10)}
-                >
-                  −10
-                </button>
-
-                <button
-                  className="score-button plus"
-                  onClick={() => changeScore('A', 1)}
-                >
-                  +1
-                </button>
-
-                <button
-                  className="score-button plus"
-                  onClick={() => changeScore('A', 5)}
-                >
-                  +5
-                </button>
-
-                <button
-                  className="score-button major"
-                  onClick={() => changeScore('A', 10)}>
-                  +10
-                </button>
-
-              </div>
-
-              <div className="team-settings">
-
-                <label>
-                  Team Name
-                </label>
-
-                <input
-                  value={teamAName}
-                  onChange={(event) =>
-                    setTeamAName(event.target.value)
-                  }
-                  onBlur={() => updateTeam('A')}/>
-
-                <label>
-                  Team Colour
-                </label>
-
-                <div className="color-input-row">
-
-                  <input
-                    type="color"
-                    value={teamAColor}
-                    onChange={(event) => {
-                      setTeamAColor(event.target.value);
-
-                      setTimeout(() => {
-                        socket.emit(
-                          'game:team:update',
-                          {
-                            team: 'A',
-                            name: teamAName,
-                            color: event.target.value
-                          }
-                        );
-                      }, 0);
-                    }}/>
-
-                  <span>
-                    {teamAColor}
-                  </span>
-
-                </div>
-
-              </div>
-
-            </article>
-
-            {/* TEAM B */}
-
-            <article className="control-card">
-
-              <div className="control-card-header">
-
-                <div>
-                  <span className="team-badge team-b-badge">
-                    TEAM B
-                  </span>
-
-                  <h2>
-                    {gameState.teams.B.name}
-                  </h2>
-                </div>
-
-                <div
-                  className="color-preview"
-                  style={{
-                    backgroundColor:
-                      gameState.teams.B.color
-                  }}/>
-              </div>
-
-              <div className="live-score">
-                {gameState.teams.B.score}
-              </div>
-
-              <div className="score-buttons">
-
-                <button
-                  className="score-button minus"
-                  onClick={() => changeScore('B', -1)}>
-                  −1
-                </button>
-
-                <button
-                  className="score-button minus"
-                  onClick={() => changeScore('B', -5)}>
-                  −5
-                </button>
-
-                <button
-                  className="score-button major"
-                  onClick={() => changeScore('B', -10)}>
-                  −10
-                </button>
-
-                <button
-                  className="score-button plus"
-                  onClick={() => changeScore('B', 1)}>
-                  +1
-                </button>
-
-                <button
-                  className="score-button plus"
-                  onClick={() => changeScore('B', 5)}>
-                  +5
-                </button>
-
-                <button
-                  className="score-button major"
-                  onClick={() => changeScore('B', 10)}>
-                  +10
-                </button>
-
-              </div>
-
-              <div className="team-settings">
-
-                <label>
-                  Team Name
-                </label>
-
-                <input
-                  value={teamBName}
-                  onChange={(event) =>
-                    setTeamBName(event.target.value)
-                  }
-                  onBlur={() => updateTeam('B')}/>
-
-                <label>
-                  Team Colour
-                </label>
-
-                <div className="color-input-row">
-
-                  <input
-                    type="color"
-                    value={teamBColor}
-                    onChange={(event) => {
-                      setTeamBColor(event.target.value);
-
-                      setTimeout(() => {
-                        socket.emit(
-                          'game:team:update',
-                          {
-                            team: 'B',
-                            name: teamBName,
-                            color: event.target.value
-                          }
-                        );
-                      }, 0);
-                    }}/>
-
-                  <span>
-                    {teamBColor}
-                  </span>
-
-                </div>
-
-              </div>
-
-            </article>
+            <ScoreControls
+              team="B"
+              teamData={
+                gameState.teams.B
+              }
+              onAdd={
+                controller.addScore
+              }
+              onSubtract={
+                controller.subtractScore
+              }
+            />
 
           </section>
 
-          {/* ROUND CONTROL */}
+          <section className="wide-control-card">
+
+            <div className="wide-card-heading">
+              <div>
+                <div className="eyebrow">
+                  TEAM SETUP
+                </div>
+
+                <h2>
+                  Team Configuration
+                </h2>
+              </div>
+            </div>
+
+            <div className="team-config-grid">
+
+              <TeamConfig
+                team="A"
+                teamData={
+                  gameState.teams.A
+                }
+                onUpdate={
+                  controller.updateTeam
+                }
+              />
+
+              <TeamConfig
+                team="B"
+                teamData={
+                  gameState.teams.B
+                }
+                onUpdate={
+                  controller.updateTeam
+                }
+              />
+
+            </div>
+
+          </section>
 
           <section className="wide-control-card">
 
@@ -576,10 +279,18 @@ function ControllerPage() {
                 <input
                   type="number"
                   min="1"
-                  value={roundNumber}
+                  value={
+                    gameState.round.number
+                  }
                   onChange={(event) =>
-                    setRoundNumber(event.target.value)
-                  }/>
+                    controller.updateRound(
+                      Number(
+                        event.target.value
+                      ),
+                      gameState.round.name
+                    )
+                  }
+                />
 
               </div>
 
@@ -590,22 +301,43 @@ function ControllerPage() {
                 </label>
 
                 <input
-                  value={roundName}
+                  value={
+                    gameState.round.name
+                  }
                   onChange={(event) =>
-                    setRoundName(event.target.value)
-                  }/>
+                    controller.updateRound(
+                      gameState.round.number,
+                      event.target.value
+                    )
+                  }
+                />
 
               </div>
 
-              <button
-                className="primary-action"
-                onClick={updateRound}>
-                UPDATE ROUND
-              </button>
+              <div className="round-display-value">
+                {gameState.round.name}
+              </div>
 
             </div>
 
           </section>
+
+          <ThemeEditor
+            currentTheme={
+              gameState.board.theme
+            }
+            onChange={
+              controller.updateTheme
+            }
+          />
+
+          <BoardPreview
+            gameState={gameState}
+          />
+
+          <ActivityLog
+            activities={activities}
+          />
 
         </main>
 

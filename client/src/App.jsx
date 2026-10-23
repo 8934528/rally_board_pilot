@@ -1,4 +1,9 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes
+} from 'react-router-dom';
 
 import BoardPage from './pages/BoardPage';
 import ControllerPage from './pages/ControllerPage';
@@ -7,32 +12,52 @@ import HostPage from './pages/HostPage';
 function App() {
   return (
     <BrowserRouter>
+
       <Routes>
+
         <Route
           path="/"
-          element={<Navigate to="/controller" replace />}
+          element={
+            <Navigate
+              to="/controller"
+              replace
+            />
+          }
         />
 
         <Route
           path="/controller"
-          element={<ControllerPage />}
+          element={
+            <ControllerPage />
+          }
         />
 
         <Route
           path="/host"
-          element={<HostPage />}
+          element={
+            <HostPage />
+          }
         />
 
         <Route
           path="/board"
-          element={<BoardPage />}
+          element={
+            <BoardPage />
+          }
         />
 
         <Route
           path="*"
-          element={<Navigate to="/controller" replace />}
+          element={
+            <Navigate
+              to="/controller"
+              replace
+            />
+          }
         />
+
       </Routes>
+
     </BrowserRouter>
   );
 }
