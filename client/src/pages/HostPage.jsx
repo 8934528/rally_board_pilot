@@ -1,90 +1,112 @@
-import { useGameState } from '../hooks/useGameState';
-import { useHost } from '../hooks/useHost';
+import { useMemo } from 'react';
+import { useGame } from '../context/GameContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 
 import HostControls from '../components/host/HostControls';
 import HostRoundControls from '../components/host/HostRoundControls';
 import HostScorePanel from '../components/host/HostScorePanel';
 import HostWheelControls from '../components/host/HostWheelControls';
+import HostTimerControls from '../components/host/HostTimerControls';
+import ConnectionStatus from '../components/common/ConnectionStatus';
+import FullscreenButton from '../components/common/FullscreenButton';
 
 function HostPage() {
-  const {
-    socket,
-    connected,
-    gameState
-  } = useGameState();
+  useDocumentTitle('RBP - HOST');
 
-  const host = useHost(socket);
+  const {
+    connected,
+    gameState,
+    controller: host
+  } = useGame();
+
+  // Keyboard shortcuts for Host
+  const shortcuts = useMemo(
+    () => ({
+      l: () => host.updateStatus('LIVE'),
+      p: () => host.updateStatus('PAUSED'),
+      n: () => {
+        if (gameState?.round) {
+          const nextNum = gameState.round.number + 1;
+          host.updateRound(nextNum, `Round ${nextNum}`);
+        }
+      },
+      w: () => host.spinWheel(),
+      space: () => {
+        if (gameState?.timer?.running) {
+          host.pauseTimer();
+        } else {
+          host.startTimer();
+        }
+      }
+    }),
+    [host, gameState?.round, gameState?.timer?.running]
+  );
+
+  useKeyboardShortcuts(shortcuts);
 
   if (!gameState) {
     return (
       <div className="host-loading">
-        Connecting...
+        <div className="loading-logo-box">RBP</div>
+        <span>CONNECTING TO GAME SERVER...</span>
       </div>
     );
   }
 
   return (
-    <main className="host-shell">
-
-      <header className="host-topbar">
-
-        <div>
-          <div className="host-title">
-            RALLY BOARD PILOT
-          </div>
-
-          <div className="host-subtitle">
-            HOST CONTROL
-          </div>
+    <div className="host-shell" id="host-root">
+      <header className="host-topbar" id="host-topbar">
+        <div className="host-brand">
+          <div className="host-logo">RBP</div>
+          <span className="host-title">HOST</span>
         </div>
 
-        <div className="host-connection">
-          <span
-            className={
-              connected
-                ? 'connection-dot online'
-                : 'connection-dot offline'
-            }
-          />
-
-          {connected
-            ? 'CONNECTED'
-            : 'OFFLINE'}
+        <div className="host-header-actions">
+          <ConnectionStatus connected={connected} label={true} />
+          <FullscreenButton />
         </div>
-
       </header>
 
-      <main className="host-main">
+      <main className="host-main" id="host-main-content">
+        <div className="host-grid-layout">
+          <div className="host-top-controls-bar">
+            <HostControls
+              onLive={() => host.updateStatus('LIVE')}
+              onPause={() => host.updateStatus('PAUSED')}
+              onPage={host.changePage}
+              status={gameState.status}
+              activePage={gameState.board.activePage}
+            />
+          </div>
 
-        <HostControls
-          onLive={() =>
-            host.updateStatus('LIVE')
-          }
-          onPause={() =>
-            host.updateStatus('PAUSED')
-          }
-          onPage={host.changePage}
-        />
+          <HostScorePanel
+            gameState={gameState}
+            onAdd={host.addScore}
+            onSubtract={host.subtractScore}
+          />
 
-        <HostScorePanel
-          gameState={gameState}
-          onAdd={host.addScore}
-          onSubtract={host.subtractScore}
-        />
+          <HostRoundControls
+            gameState={gameState}
+            onRound={host.updateRound}
+          />
 
-        <HostRoundControls
-          gameState={gameState}
-          onRound={host.updateRound}
-        />
+          <HostTimerControls
+            gameState={gameState}
+            onStart={host.startTimer}
+            onPause={host.pauseTimer}
+            onReset={host.resetTimer}
+            onPage={host.changePage}
+          />
 
-        <HostWheelControls
-          onPage={host.changePage}
-          onSpin={host.spinWheel}
-        />
-
+          <HostWheelControls
+            gameState={gameState}
+            onPage={host.changePage}
+            onSpin={host.spinWheel}
+          />
+        </div>
       </main>
-
-    </main>
+    </div>
   );
 }
 

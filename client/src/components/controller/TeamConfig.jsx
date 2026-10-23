@@ -1,79 +1,68 @@
 import { useEffect, useState } from 'react';
-
 import Button from '../common/Button';
+import ColorPicker from '../common/ColorPicker';
 
 function TeamConfig({
   team,
   teamData,
   onUpdate
 }) {
-  const [name, setName] =
-    useState(teamData.name);
-
-  const [color, setColor] =
-    useState(teamData.color);
+  const [name, setName] = useState(teamData.name);
+  const [color, setColor] = useState(teamData.color);
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     setName(teamData.name);
     setColor(teamData.color);
-  }, [
-    teamData.name,
-    teamData.color
-  ]);
+  }, [teamData.name, teamData.color]);
 
   const save = () => {
-    onUpdate(
-      team,
-      name,
-      color
-    );
+    onUpdate(team, name, color);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 1500);
   };
 
   return (
-    <div className="team-config">
-
+    <div className="team-config-block" id={`team-config-${team}`}>
       <div className="team-config-heading">
-        TEAM {team}
+        <span className="team-config-tag">TEAM {team} CONFIGURATION</span>
       </div>
 
-      <label>
-        Team Name
-      </label>
-
-      <input
-        value={name}
-        onChange={(event) =>
-          setName(event.target.value)
-        }
-      />
-
-      <label>
-        Team Colour
-      </label>
-
-      <div className="color-input-row">
-
+      <div className="team-field-group">
+        <label htmlFor={`team-name-${team}`}>Team Name</label>
         <input
-          type="color"
-          value={color}
-          onChange={(event) =>
-            setColor(event.target.value)
-          }
+          id={`team-name-${team}`}
+          className="team-input-text"
+          value={name}
+          maxLength={30}
+          onChange={(event) => setName(event.target.value)}
         />
+      </div>
 
-        <span>
-          {color}
-        </span>
-
+      <div className="team-field-group">
+        <label>Team Color</label>
+        <ColorPicker
+          value={color}
+          onChange={(newColor) => setColor(newColor)}
+          label={`Team ${team} Color`}
+        />
       </div>
 
       <Button
-        variant="primary"
+        variant={saved ? 'success' : 'primary'}
+        size="small"
+        className="team-save-btn"
+        id={`btn-save-team-${team}`}
         onClick={save}
       >
-        SAVE TEAM
+        {saved ? (
+          <>
+            <i className="bi bi-check2" /> SAVED
+          </>
+        ) : (
+          'SAVE TEAM'
+        )}
       </Button>
-
     </div>
   );
 }

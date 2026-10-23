@@ -3,34 +3,43 @@ import Button from '../common/Button';
 function HostControls({
   onLive,
   onPause,
-  onPage
+  onPage,
+  status,
+  activePage
 }) {
   return (
-    <div className="host-controls">
-
+    <div className="host-controls" role="group" aria-label="Host primary game controls">
       <Button
-        variant="success"
+        variant={status === 'LIVE' ? 'success' : 'secondary'}
+        size="small"
         onClick={onLive}
+        id="btn-host-live"
       >
-        GO LIVE
+        <i className="bi bi-broadcast" />
+        <span>GO LIVE</span>
+        <span className="rbp-shortcut-badge">L</span>
       </Button>
 
       <Button
-        variant="warning"
+        variant={status === 'PAUSED' ? 'warning' : 'secondary'}
+        size="small"
         onClick={onPause}
+        id="btn-host-pause"
       >
-        PAUSE
+        <i className="bi bi-pause-circle" />
+        <span>PAUSE</span>
+        <span className="rbp-shortcut-badge">P</span>
       </Button>
 
       <Button
-        variant="secondary"
-        onClick={() =>
-          onPage('scoreboard')
-        }
+        variant={activePage === 'scoreboard' ? 'primary' : 'secondary'}
+        size="small"
+        onClick={() => onPage('scoreboard')}
+        id="btn-host-show-scoreboard"
       >
-        SCOREBOARD
+        <i className="bi bi-trophy" />
+        <span>SCOREBOARD</span>
       </Button>
-
     </div>
   );
 }

@@ -1,27 +1,16 @@
-import { useGameState } from '../hooks/useGameState';
-
+import { useGame } from '../context/GameContext';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import GameBoard from '../components/board/GameBoard';
 
 function BoardPage() {
-  const {
-    gameState,
-    connected
-  } = useGameState();
+  useDocumentTitle('RBP - BOARD');
+  const { gameState, connected } = useGame();
 
   if (!gameState) {
     return (
       <div className="board-loading">
-        <div className="loading-logo">
-          RBP
-        </div>
-
-        <h1>
-          RALLY BOARD PILOT
-        </h1>
-
-        <p>
-          Connecting to game server...
-        </p>
+        <div className="loading-logo">RBP</div>
+        <span>CONNECTING TO GAME SERVER...</span>
       </div>
     );
   }

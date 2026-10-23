@@ -6,6 +6,12 @@ const gameState = {
     name: 'Opening Round'
   },
 
+  roundTransition: {
+    active: false,
+    number: 1,
+    name: 'Opening Round'
+  },
+
   teams: {
     A: {
       name: 'Team A',
@@ -62,14 +68,25 @@ const gameState = {
     message: 'Congratulations!'
   },
 
+  activities: [
+    {
+      id: 'init-1',
+      message: 'System initialized in READY state',
+      category: 'system',
+      time: new Date().toLocaleTimeString(),
+      timestamp: new Date().toISOString()
+    }
+  ],
+
   meta: {
-    lastAction: null,
-    lastActionAt: null,
+    lastAction: 'System ready',
+    lastActionAt: new Date().toISOString(),
     revision: 0
   }
 };
 
 let timerInterval = null;
+let transitionTimeout = null;
 
 export function getGameState() {
   return gameState;
@@ -79,16 +96,44 @@ export function updateGameState(updater) {
   updater(gameState);
 
   gameState.meta.revision += 1;
-  gameState.meta.lastActionAt =
-    new Date().toISOString();
+  gameState.meta.lastActionAt = new Date().toISOString();
 
   return gameState;
 }
 
-export function setLastAction(message) {
+export function setLastAction(message, category = 'general') {
   gameState.meta.lastAction = message;
-  gameState.meta.lastActionAt =
-    new Date().toISOString();
+  gameState.meta.lastActionAt = new Date().toISOString();
+
+  const activity = {
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    message,
+    category,
+    time: new Date().toLocaleTimeString(),
+    timestamp: new Date().toISOString()
+  };
+
+  gameState.activities = [activity, ...gameState.activities].slice(0, 50);
+}
+
+export function triggerRoundTransition(roundNumber, roundName, onEnd) {
+  if (transitionTimeout) {
+    clearTimeout(transitionTimeout);
+  }
+
+  gameState.roundTransition = {
+    active: true,
+    number: roundNumber,
+    name: roundName
+  };
+
+  transitionTimeout = setTimeout(() => {
+    gameState.roundTransition.active = false;
+    transitionTimeout = null;
+    if (typeof onEnd === 'function') {
+      onEnd();
+    }
+  }, 2200);
 }
 
 export function startTimer(onTick) {
@@ -99,20 +144,14 @@ export function startTimer(onTick) {
   gameState.timer.running = true;
 
   timerInterval = setInterval(() => {
-    if (
-      gameState.timer.seconds <= 0
-    ) {
+    if (gameState.timer.seconds <= 0) {
       stopTimer();
-
       gameState.timer.running = false;
-
       onTick();
-
       return;
     }
 
     gameState.timer.seconds -= 1;
-
     onTick();
   }, 1000);
 }
@@ -137,13 +176,16 @@ export function stopTimer() {
 
 export function resetTimer() {
   stopTimer();
-
-  gameState.timer.seconds =
-    gameState.timer.total;
+  gameState.timer.seconds = gameState.timer.total;
 }
 
 export function resetGameState() {
   stopTimer();
+
+  if (transitionTimeout) {
+    clearTimeout(transitionTimeout);
+    transitionTimeout = null;
+  }
 
   gameState.status = 'READY';
 
@@ -152,11 +194,16 @@ export function resetGameState() {
     name: 'Opening Round'
   };
 
+  gameState.roundTransition = {
+    active: false,
+    number: 1,
+    name: 'Opening Round'
+  };
+
   gameState.teams.A.score = 0;
   gameState.teams.B.score = 0;
 
-  gameState.board.activePage =
-    'scoreboard';
+  gameState.board.activePage = 'scoreboard';
 
   gameState.timer = {
     running: false,
@@ -180,10 +227,10 @@ export function resetGameState() {
   };
 
   gameState.meta.revision += 1;
-  gameState.meta.lastAction =
-    'Game reset';
-  gameState.meta.lastActionAt =
-    new Date().toISOString();
+  gameState.meta.lastAction = 'Game reset';
+  gameState.meta.lastActionAt = new Date().toISOString();
+
+  setLastAction('Game reset to initial state', 'system');
 
   return gameState;
 }

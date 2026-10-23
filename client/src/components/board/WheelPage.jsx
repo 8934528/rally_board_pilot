@@ -1,56 +1,124 @@
-function WheelPage({ gameState }) {
-  const entries = gameState.wheel.entries;
+import { useState, useEffect } from 'react';
+import Modal from '../common/Modal';
+
+const SEGMENT_COLORS = [
+  '#FF4D6D',
+  '#4D7CFE',
+  '#31E981',
+  '#FBBF24',
+  '#A78BFA',
+  '#F97316',
+  '#06B6D4',
+  '#EC4899',
+  '#10B981',
+  '#6366F1',
+  '#E11D48',
+  '#8B5CF6'
+];
+
+function WheelPage({ gameState, mini = false }) {
+  const entries = gameState?.wheel?.entries || [];
+  const spinning = gameState?.wheel?.spinning;
+  const result = gameState?.wheel?.result;
+  const winnerIndex = gameState?.wheel?.winnerIndex;
+
+  const [resultModalOpen, setResultModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (result && !spinning) {
+      setResultModalOpen(true);
+      const timer = setTimeout(() => {
+        setResultModalOpen(false);
+      }, 6000);
+      return () => clearTimeout(timer);
+    } else {
+      setResultModalOpen(false);
+    }
+  }, [result, spinning]);
+
+  const count = Math.max(entries.length, 1);
+  const segmentAngle = 360 / count;
+
+  const gradientStops = entries.map((_, i) => {
+    const col = SEGMENT_COLORS[i % SEGMENT_COLORS.length];
+    const start = (i / count) * 360;
+    const end = ((i + 1) / count) * 360;
+    return `${col} ${start}deg ${end}deg`;
+  }).join(', ');
+
+  let targetAngle = 0;
+  if (winnerIndex !== null && winnerIndex !== undefined && count > 0) {
+    const segmentCenter = winnerIndex * segmentAngle + segmentAngle / 2;
+    targetAngle = 1440 + (360 - segmentCenter);
+  } else if (spinning) {
+    targetAngle = 1800;
+  }
+
+  const wheelStyle = {
+    background: gradientStops ? `conic-gradient(${gradientStops})` : undefined,
+    transform: spinning || winnerIndex !== null ? `rotate(${targetAngle}deg)` : 'rotate(0deg)',
+    transition: spinning ? 'transform 3.2s cubic-bezier(0.12, 0.8, 0.2, 1)' : 'none'
+  };
 
   return (
-    <section className="board-special-page wheel-page">
-
-      <div className="special-eyebrow">
-        RALLY WHEEL
+    <div className={`board-wheel-screen ${mini ? 'mini-wheel-mode' : ''}`} id="board-wheel-screen">
+      {/* Prominent Wheel Pointer Arrow */}
+      <div className="wheel-pointer-container" aria-hidden="true">
+        <div className="wheel-pointer-arrow" />
       </div>
 
-      <div
-        className={`wheel ${
-          gameState.wheel.spinning
-            ? 'wheel-spinning'
-            : ''
-        }`}
-      >
-        <div className="wheel-center">
-          {gameState.wheel.spinning
-            ? 'SPIN'
-            : 'RALLY'}
-        </div>
-
-        {entries.map(
-          (entry, index) => {
-            const angle =
-              (360 / entries.length) *
-              index;
-
+      <div className="wheel-stage-container">
+        <div
+          className={`board-wheel ${spinning ? 'is-spinning' : ''}`}
+          style={wheelStyle}
+          role="img"
+          aria-label="Game prize wheel"
+        >
+          {entries.map((entry, index) => {
+            const rot = index * segmentAngle + segmentAngle / 2;
             return (
               <div
-                className="wheel-entry"
                 key={`${entry}-${index}`}
+                className="wheel-slice-label"
                 style={{
-                  transform: `rotate(${angle}deg)`
+                  transform: `rotate(${rot}deg)`
                 }}
               >
-                <span>
-                  {entry}
-                </span>
+                <span className="slice-text">{entry}</span>
               </div>
             );
-          }
-        )}
+          })}
+
+          <div className="board-wheel-hub">
+            <span className="hub-text">{spinning ? 'SPINNING' : 'RALLY'}</span>
+          </div>
+        </div>
       </div>
 
-      {gameState.wheel.result && (
-        <div className="wheel-result">
-          {gameState.wheel.result}
-        </div>
+      {!mini && (
+        <Modal
+          open={resultModalOpen}
+          onClose={() => setResultModalOpen(false)}
+          title="WHEEL RESULT"
+          size="medium"
+        >
+          <div className="wheel-result-modal-body">
+            <div className="result-trophy-icon">
+              <i className="bi bi-star-fill" />
+            </div>
+            <div className="result-banner-label">SELECTED OUTCOME</div>
+            <div className="result-highlight-text">{result}</div>
+            <button
+              type="button"
+              className="rbp-button rbp-button-primary mt-3"
+              onClick={() => setResultModalOpen(false)}
+            >
+              DISMISS
+            </button>
+          </div>
+        </Modal>
       )}
-
-    </section>
+    </div>
   );
 }
 

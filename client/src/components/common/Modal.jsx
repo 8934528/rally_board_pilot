@@ -1,10 +1,31 @@
+import { useEffect, useRef } from 'react';
+
 function Modal({
   open,
   title,
   children,
   onClose,
-  footer
+  footer,
+  size = 'medium'
 }) {
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [open, onClose]);
+
   if (!open) {
     return null;
   }
@@ -12,34 +33,31 @@ function Modal({
   return (
     <div
       className="rbp-modal-backdrop"
-      onMouseDown={onClose}>
+      onMouseDown={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-heading">
 
       <div
-        className="rbp-modal"
-        onMouseDown={(event) =>
-          event.stopPropagation()
-        }>
+        ref={modalRef}
+        className={`rbp-modal rbp-modal-${size}`}
+        onMouseDown={(event) => event.stopPropagation()}>
 
         <div className="rbp-modal-header">
-          <h2>{title}</h2>
+          <h2 id="modal-heading" className="rbp-modal-title">{title}</h2>
 
           <button
             type="button"
             className="modal-close"
-            onClick={onClose}>
+            onClick={onClose}
+            aria-label="Close modal">
             ×
           </button>
         </div>
 
-        <div className="rbp-modal-body">
-          {children}
-        </div>
+        <div className="rbp-modal-body">{children}</div>
 
-        {footer && (
-          <div className="rbp-modal-footer">
-            {footer}
-          </div>
-        )}
+        {footer && <div className="rbp-modal-footer">{footer}</div>}
       </div>
     </div>
   );

@@ -5,54 +5,40 @@ function Scoreboard({ gameState }) {
   const teamB = gameState.teams.B;
 
   return (
-    <section className="scoreboard">
-
+    <section className="board-scoreboard-fullscreen" id="board-scoreboard">
       <article
-        className="team-card team-a"
+        className="board-team-card board-team-a"
         style={{
           '--team-color': teamA.color
         }}
       >
-        <div className="team-accent" />
-
-        <div className="team-content">
-          <span className="team-label">
-            TEAM A
-          </span>
-
-          <h1>{teamA.name}</h1>
-
-          <div className="score">
+        <div className="board-team-inner">
+          <span className="board-team-badge">TEAM A</span>
+          <h1 className="board-team-name">{teamA.name}</h1>
+          <div className="board-score-number" id="board-score-a">
             {formatScore(teamA.score)}
           </div>
         </div>
       </article>
 
-      <div className="versus">
-        <span>VS</span>
+      <div className="board-vs-divider" aria-hidden="true">
+        <span className="vs-badge">VS</span>
       </div>
 
       <article
-        className="team-card team-b"
+        className="board-team-card board-team-b"
         style={{
           '--team-color': teamB.color
         }}
       >
-        <div className="team-accent" />
-
-        <div className="team-content">
-          <span className="team-label">
-            TEAM B
-          </span>
-
-          <h1>{teamB.name}</h1>
-
-          <div className="score">
+        <div className="board-team-inner">
+          <span className="board-team-badge">TEAM B</span>
+          <h1 className="board-team-name">{teamB.name}</h1>
+          <div className="board-score-number" id="board-score-b">
             {formatScore(teamB.score)}
           </div>
         </div>
       </article>
-
     </section>
   );
 }

@@ -1,33 +1,19 @@
-import { useState } from 'react';
+import { useFullscreen } from '../../hooks/useFullscreen';
+import IconButton from './IconButton';
 
-import Button from './Button';
-
-function FullscreenButton() {
-  const [fullscreen, setFullscreen] =
-    useState(false);
-
-  const toggleFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
-
-        setFullscreen(true);
-      } else {
-        await document.exitFullscreen();
-
-        setFullscreen(false);
-      }
-    } catch {
-      setFullscreen(false);
-    }
-  };
+function FullscreenButton({ variant = 'ghost', size = 'small', className = '' }) {
+  const { isFullscreen, toggleFullscreen } = useFullscreen();
 
   return (
-    <Button
-      variant="ghost"
-      onClick={toggleFullscreen}>
-      {fullscreen ? 'EXIT FULLSCREEN' : 'FULLSCREEN'}
-    </Button>
+    <IconButton
+      icon={isFullscreen ? 'fullscreen-exit' : 'fullscreen'}
+      label={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+      tooltip={isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
+      variant={variant}
+      size={size}
+      className={`fullscreen-toggle-btn ${className}`}
+      onClick={toggleFullscreen}
+    />
   );
 }
 

@@ -8,7 +8,9 @@ export const GAME_CONFIG = {
 
   defaultScoreStep: 5,
 
-  scoreSteps: [1, 5, 10, 25, 50],
+  scoreSteps: [1, 2, 5, 10],
+
+  maxTimerSeconds: 180, // strictly 3 minutes max
 
   timerPresets: [
     10,
@@ -21,7 +23,7 @@ export const GAME_CONFIG = {
     180
   ],
 
-  maxScore: 9999,
+  maxScore: 99999,
 
   wheel: {
     maxEntries: 24
