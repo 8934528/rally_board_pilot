@@ -1,0 +1,18 @@
+.theme-editor {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.035),
+      rgba(255, 255, 255, 0.01)
+    );
+}
+
+.theme-option {
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease;
+}
+
+.theme-option:hover {
+  transform: translateY(-2px);
+}

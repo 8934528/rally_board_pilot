@@ -1,0 +1,160 @@
+.host-shell {
+  min-height: 100vh;
+
+  background: #080b12;
+
+  color: #f8fafc;
+}
+
+.host-topbar {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  height: 75px;
+
+  padding: 0 25px;
+
+  border-bottom: 1px solid #1d2532;
+
+  background: #0c1018;
+}
+
+.host-title {
+  font-size: 0.9rem;
+  font-weight: 950;
+
+  letter-spacing: 0.15em;
+}
+
+.host-subtitle {
+  color: #64748b;
+
+  font-size: 0.62rem;
+  font-weight: 800;
+
+  letter-spacing: 0.2em;
+}
+
+.host-connection {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #94a3b8;
+
+  font-size: 0.65rem;
+  font-weight: 900;
+}
+
+.host-main {
+  max-width: 1100px;
+
+  margin: 0 auto;
+
+  padding: 35px;
+}
+
+.host-controls {
+  display: flex;
+
+  gap: 10px;
+
+  margin-bottom: 25px;
+}
+
+.host-score-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(2, 1fr);
+
+  gap: 20px;
+}
+
+.host-score-card,
+.host-panel {
+  padding: 25px;
+
+  border: 1px solid #1d2532;
+
+  border-radius: 16px;
+
+  background: #0d121b;
+}
+
+.host-score-card > span,
+.host-panel small {
+  color: #64748b;
+
+  font-size: 0.62rem;
+  font-weight: 900;
+
+  letter-spacing: 0.15em;
+}
+
+.host-score-card h2 {
+  margin: 10px 0;
+
+  font-size: 1.4rem;
+}
+
+.host-score-card strong {
+  display: block;
+
+  margin: 25px 0;
+
+  font-size: 6rem;
+  font-weight: 950;
+
+  line-height: 0.8;
+}
+
+.host-score-buttons,
+.host-panel-actions {
+  display: flex;
+
+  gap: 10px;
+}
+
+.host-panel {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  margin-top: 20px;
+}
+
+.host-panel h2 {
+  margin: 7px 0;
+
+  font-size: 1.3rem;
+}
+
+.host-panel p {
+  margin: 0;
+
+  color: #64748b;
+}
+
+@media (max-width: 700px) {
+  .host-main {
+    padding: 18px;
+  }
+
+  .host-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .host-panel {
+    display: block;
+  }
+
+  .host-panel-actions {
+    margin-top: 20px;
+  }
+}
