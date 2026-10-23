@@ -20,18 +20,26 @@ function HostPage() {
     controller: host
   } = useGame();
 
-  // Keyboard shortcuts for Host
   const shortcuts = useMemo(
     () => ({
       l: () => host.updateStatus('LIVE'),
+
       p: () => host.updateStatus('PAUSED'),
+
       n: () => {
         if (gameState?.round) {
-          const nextNum = gameState.round.number + 1;
-          host.updateRound(nextNum, `Round ${nextNum}`);
+          const nextNum =
+            gameState.round.number + 1;
+
+          host.updateRound(
+            nextNum,
+            `Round ${nextNum}`
+          );
         }
       },
+
       w: () => host.spinWheel(),
+
       space: () => {
         if (gameState?.timer?.running) {
           host.pauseTimer();
@@ -40,7 +48,11 @@ function HostPage() {
         }
       }
     }),
-    [host, gameState?.round, gameState?.timer?.running]
+    [
+      host,
+      gameState?.round,
+      gameState?.timer?.running
+    ]
   );
 
   useKeyboardShortcuts(shortcuts);
@@ -48,62 +60,115 @@ function HostPage() {
   if (!gameState) {
     return (
       <div className="host-loading">
-        <div className="loading-logo-box">RBP</div>
-        <span>CONNECTING TO GAME SERVER...</span>
+        <div className="loading-logo-box">
+          RBP
+        </div>
+
+        <span>
+          CONNECTING TO GAME SERVER...
+        </span>
       </div>
     );
   }
 
   return (
-    <div className="host-shell" id="host-root">
-      <header className="host-topbar" id="host-topbar">
+    <div
+      className="host-shell"
+      id="host-root"
+    >
+      <header
+        className="host-topbar"
+        id="host-topbar"
+      >
         <div className="host-brand">
-          <div className="host-logo">RBP</div>
-          <span className="host-title">HOST</span>
+          <div className="host-logo">
+            RBP
+          </div>
+
+          <span className="host-title">
+            HOST
+          </span>
         </div>
 
         <div className="host-header-actions">
-          <ConnectionStatus connected={connected} label={true} />
+          <ConnectionStatus
+            connected={connected}
+            label={false}
+            dotOnly
+          />
+
           <FullscreenButton />
         </div>
       </header>
 
-      <main className="host-main" id="host-main-content">
+      <main
+        className="host-main"
+        id="host-main-content"
+      >
         <div className="host-grid-layout">
           <div className="host-top-controls-bar">
             <HostControls
-              onLive={() => host.updateStatus('LIVE')}
-              onPause={() => host.updateStatus('PAUSED')}
+              onLive={() =>
+                host.updateStatus('LIVE')
+              }
+              onPause={() =>
+                host.updateStatus('PAUSED')
+              }
               onPage={host.changePage}
               status={gameState.status}
-              activePage={gameState.board.activePage}
+              activePage={
+                gameState.board.activePage
+              }
             />
           </div>
 
-          <HostScorePanel
-            gameState={gameState}
-            onAdd={host.addScore}
-            onSubtract={host.subtractScore}
-          />
+          <div className="host-team-round-row">
+            <div className="host-col-4">
+              <HostScorePanel
+                team="A"
+                gameState={gameState}
+                onAdd={host.addScore}
+                onSubtract={host.subtractScore}
+              />
+            </div>
 
-          <HostRoundControls
-            gameState={gameState}
-            onRound={host.updateRound}
-          />
+            <div className="host-col-4">
+              <HostScorePanel
+                team="B"
+                gameState={gameState}
+                onAdd={host.addScore}
+                onSubtract={host.subtractScore}
+              />
+            </div>
 
-          <HostTimerControls
-            gameState={gameState}
-            onStart={host.startTimer}
-            onPause={host.pauseTimer}
-            onReset={host.resetTimer}
-            onPage={host.changePage}
-          />
+            <div className="host-col-4">
+              <HostRoundControls
+                gameState={gameState}
+                onRound={host.updateRound}
+              />
+            </div>
+          </div>
 
-          <HostWheelControls
-            gameState={gameState}
-            onPage={host.changePage}
-            onSpin={host.spinWheel}
-          />
+          <div className="host-clock-wheel-row">
+            <div className="host-col-5">
+              <HostTimerControls
+                gameState={gameState}
+                onStart={host.startTimer}
+                onPause={host.pauseTimer}
+                onReset={host.resetTimer}
+                onSetTimer={host.setTimer}
+                onPage={host.changePage}
+              />
+            </div>
+
+            <div className="host-col-7">
+              <HostWheelControls
+                gameState={gameState}
+                onPage={host.changePage}
+                onSpin={host.spinWheel}
+              />
+            </div>
+          </div>
         </div>
       </main>
     </div>

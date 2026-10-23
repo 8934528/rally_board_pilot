@@ -82,21 +82,39 @@
   align-items: flex-end;
   justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
-.host-team-round-grid {
+.host-team-round-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns:
+    minmax(0, 4fr)
+    minmax(0, 4fr)
+    minmax(0, 4fr);
   gap: 12px;
+  width: 100%;
   min-width: 0;
 }
 
-.host-team-round-grid > .host-score-grid {
-  display: contents;
+.host-clock-wheel-row {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 5fr)
+    minmax(0, 7fr);
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.host-col-4,
+.host-col-5,
+.host-col-7 {
+  min-width: 0;
+  width: 100%;
 }
 
 .host-score-card {
+  width: 100%;
+  height: 100%;
   min-width: 0;
   padding: 14px 16px;
   background: #0d121c;
@@ -111,9 +129,11 @@
   align-items: center;
   gap: 8px;
   margin-bottom: 4px;
+  min-width: 0;
 }
 
 .host-team-badge {
+  flex-shrink: 0;
   font-size: 0.62rem;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -121,9 +141,13 @@
 }
 
 .host-team-name {
+  min-width: 0;
   margin: 0;
   font-size: 1rem;
   font-weight: 800;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .host-score-digits {
@@ -139,6 +163,7 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
+  margin-top: auto;
 }
 
 .host-pt-btn {
@@ -149,7 +174,9 @@
 }
 
 .host-panel {
+  width: 100%;
   min-width: 0;
+  height: 100%;
   padding: 14px 16px;
   background: #0d121c;
   border: 1px solid var(--color-border-subtle);
@@ -162,6 +189,10 @@
 
 .host-round-panel {
   min-height: 100%;
+}
+
+.host-round-meta {
+  min-width: 0;
 }
 
 .host-round-panel .host-round-readout {
@@ -206,17 +237,6 @@
   justify-content: flex-end;
   gap: 8px;
   flex-shrink: 0;
-}
-
-.host-timer-wheel-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  min-width: 0;
-}
-
-.host-timer-wheel-grid > .host-panel {
-  min-width: 0;
 }
 
 .host-timer-card-panel {
@@ -290,7 +310,7 @@
 .host-square-2x2-grid {
   display: grid;
   grid-template-columns: repeat(2, 42px);
-  grid-auto-rows: 32px;
+  grid-template-rows: repeat(2, 32px);
   gap: 4px;
 }
 
@@ -304,12 +324,9 @@
 
 .host-timer-action-buttons {
   display: flex;
+  align-items: flex-end;
   gap: 6px;
   flex-wrap: wrap;
-}
-
-.host-timer-action-buttons .rbp-button {
-  min-width: 96px;
 }
 
 .host-wheel-panel {
@@ -328,7 +345,10 @@
 .host-mini-wheel-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
+  flex: 1;
   min-width: 0;
+  min-height: 260px;
   padding: 8px 0;
   background: #080c14;
   border: 1px solid var(--color-border-subtle);
@@ -337,9 +357,17 @@
   overflow: hidden;
 }
 
+.host-controls .rbp-icon-btn,
+.host-timer-action-buttons .rbp-icon-btn {
+  flex-shrink: 0;
+}
+
 @media (max-width: 900px) {
-  .host-team-round-grid,
-  .host-timer-wheel-grid {
+  .host-team-round-row {
+    grid-template-columns: 1fr;
+  }
+
+  .host-clock-wheel-row {
     grid-template-columns: 1fr;
   }
 }
@@ -347,10 +375,6 @@
 @media (max-width: 768px) {
   .host-main {
     padding: 12px;
-  }
-
-  .host-team-round-grid > .host-score-grid {
-    display: contents !important;
   }
 
   .host-top-controls-bar,
@@ -380,6 +404,10 @@
   .host-timer-action-buttons {
     width: 100%;
   }
+
+  .host-mini-wheel-wrapper {
+    min-height: 220px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -387,8 +415,11 @@
     gap: 6px;
   }
 
-  .host-timer-action-buttons .rbp-button {
-    flex: 1 1 0;
-    min-width: 0;
+  .host-controls {
+    gap: 6px;
+  }
+
+  .host-timer-action-buttons {
+    justify-content: flex-start;
   }
 }

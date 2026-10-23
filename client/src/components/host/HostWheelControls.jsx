@@ -14,7 +14,7 @@ function HostWheelControls({
     <section className="host-panel host-wheel-panel" id="host-wheel-panel">
       <div className="host-wheel-header">
         <div>
-          <small className="host-panel-eyebrow">RALLY WHEEL (SYNCHRONIZED)</small>
+          <small className="host-panel-eyebrow">RALLY WHEEL</small>
           <h2 className="host-panel-title">
             {spinning ? 'Wheel Spinning...' : result ? `Result: ${result}` : 'Wheel Ready'}
           </h2>

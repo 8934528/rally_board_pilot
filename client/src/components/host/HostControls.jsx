@@ -1,4 +1,4 @@
-import Button from '../common/Button';
+import Tooltip from '../common/Tooltip';
 
 function HostControls({
   onLive,
@@ -7,43 +7,71 @@ function HostControls({
   status,
   activePage
 }) {
+  const isLive = status === 'LIVE';
+  const isPaused = status === 'PAUSED';
+  const isScoreboard = activePage === 'scoreboard';
+
   return (
     <div
       className="host-controls items-end d-flex justify-content-end"
       role="group"
       aria-label="Host primary game controls"
     >
-      <Button
-        variant={status === 'LIVE' ? 'success' : 'secondary'}
-        size="small"
-        onClick={onLive}
-        id="btn-host-live"
-      >
-        <i className="bi bi-broadcast" />
-        <span>GO LIVE</span>
-        <span className="rbp-shortcut-badge">CTRL + L</span>
-      </Button>
+      <Tooltip content="Go Live (CTRL + L)">
+        <button
+          type="button"
+          className={`rbp-icon-btn rbp-icon-btn-small ${
+            isLive ? 'rbp-button-success active-live' : 'rbp-button-secondary'
+          }`}
+          onClick={onLive}
+          id="btn-host-live"
+          aria-label="Go Live"
+          aria-pressed={isLive}
+        >
+          <i
+            className="bi bi-broadcast"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
 
-      <Button
-        variant={status === 'PAUSED' ? 'warning' : 'secondary'}
-        size="small"
-        onClick={onPause}
-        id="btn-host-pause"
-      >
-        <i className="bi bi-pause-circle" />
-        <span>PAUSE</span>
-        <span className="rbp-shortcut-badge">CTRL + P</span>
-      </Button>
+      <Tooltip content="Pause (CTRL + P)">
+        <button
+          type="button"
+          className={`rbp-icon-btn rbp-icon-btn-small ${
+            isPaused ? 'rbp-button-warning active-pause' : 'rbp-button-secondary'
+          }`}
+          onClick={onPause}
+          id="btn-host-pause"
+          aria-label="Pause"
+          aria-pressed={isPaused}
+        >
+          <i
+            className="bi bi-pause-circle-fill"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
 
-      <Button
-        variant={activePage === 'scoreboard' ? 'primary' : 'secondary'}
-        size="small"
-        onClick={() => onPage('scoreboard')}
-        id="btn-host-show-scoreboard"
-      >
-        <i className="bi bi-trophy" />
-        <span>SCOREBOARD</span>
-      </Button>
+      <Tooltip content="Scoreboard">
+        <button
+          type="button"
+          className={`rbp-icon-btn rbp-icon-btn-small ${
+            isScoreboard ? 'rbp-button-primary active-scoreboard' : 'rbp-button-secondary'
+          }`}
+          onClick={() =>
+            onPage('scoreboard')
+          }
+          id="btn-host-show-scoreboard"
+          aria-label="Show Scoreboard"
+          aria-pressed={isScoreboard}
+        >
+          <i
+            className="bi bi-trophy"
+            aria-hidden="true"
+          />
+        </button>
+      </Tooltip>
     </div>
   );
 }

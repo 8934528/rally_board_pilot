@@ -1,10 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { socket, connectSocket, disconnectSocket } from '../services/socket';
+import { socket, connectSocket } from '../services/socket';
 
 export function useSocket() {
   const [connected, setConnected] = useState(socket.connected);
-
   const [connectionError, setConnectionError] = useState(null);
 
   useEffect(() => {
@@ -18,6 +17,7 @@ export function useSocket() {
     };
 
     const handleError = (error) => {
+      setConnected(false);
       setConnectionError(
         error?.message || 'Connection failed'
       );
@@ -27,14 +27,16 @@ export function useSocket() {
     socket.on('disconnect', handleDisconnect);
     socket.on('connect_error', handleError);
 
-    connectSocket();
+    if (!socket.connected) {
+      connectSocket();
+    } else {
+      setConnected(true);
+    }
 
     return () => {
       socket.off('connect', handleConnect);
       socket.off('disconnect', handleDisconnect);
       socket.off('connect_error', handleError);
-
-      disconnectSocket();
     };
   }, []);
 
