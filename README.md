@@ -357,8 +357,6 @@ The game state is lost when the server restarts. Future versions may add persist
 - Saved themes
 - Saved wheel presets
 - Sound effects
-- Fullscreen mode
-- Keyboard shortcuts
 - Multiple teams
 - Question management
 - Game stats
