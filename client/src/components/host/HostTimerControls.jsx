@@ -18,7 +18,6 @@ function HostTimerControls({
   onPage
 }) {
   const timer = gameState.timer;
-
   const isTimerPage = gameState.board.activePage === 'timer';
 
   const handleStep = (step) => {
@@ -28,10 +27,7 @@ function HostTimerControls({
 
     const nextVal = Math.max(
       0,
-      Math.min(
-        180,
-        timer.seconds + step
-      )
+      Math.min(180, timer.seconds + step)
     );
 
     onSetTimer(nextVal);
@@ -42,8 +38,8 @@ function HostTimerControls({
       className="host-panel host-timer-card-panel"
       id="host-timer-panel"
     >
-      <div className="host-panel-header-row">
-        <div>
+      <div className="host-timer-main-row">
+        <div className="host-timer-display-block">
           <small className="host-panel-eyebrow">
             GAME CLOCK
           </small>
@@ -65,26 +61,20 @@ function HostTimerControls({
 
         <Tooltip content="Show Game Clock on Board">
           <Button
-            variant={
-              isTimerPage ? 'primary' : 'secondary'
-            }
+            variant={isTimerPage ? 'primary' : 'secondary'}
             size="small"
-            onClick={() => onPage('timer')
-            }
+            onClick={() => onPage('timer')}
             aria-label="Show Game Clock on Board"
           >
-            <i
-              className="bi bi-display"
-              aria-hidden="true"
-            />
+            <i className="bi bi-display" aria-hidden="true" />
           </Button>
         </Tooltip>
       </div>
 
-      <div className="host-timer-body-grid">
-        <div className="host-timer-adjust-column">
+      <div className="host-timer-controls-row">
+        <div className="host-timer-control-group">
           <small className="host-field-caption">
-            TIME ADJUST (SEC)
+            TIME ADJUST
           </small>
 
           <div
@@ -92,36 +82,27 @@ function HostTimerControls({
             role="group"
             aria-label="Timer Adjustment Buttons"
           >
-            {TIMER_ADJUST_STEPS.map(
-              (step) => {
-                const isMinus = step < 0;
+            {TIMER_ADJUST_STEPS.map((step) => {
+              const isMinus = step < 0;
+              const amount = Math.abs(step);
 
-                const amount = Math.abs(step);
-
-                return (
-                  <Button
-                    key={step}
-                    variant={
-                      isMinus ? 'score-minus' : 'score-plus'
-                    }
-                    size="small"
-                    className="host-sq-step-btn"
-                    onClick={() =>
-                      handleStep(step)
-                    }
-                    aria-label={`${
-                      isMinus ? 'Subtract' : 'Add'
-                    } ${amount} seconds`}
-                  >
-                    {isMinus ? `−${amount}` : `+${amount}`}
-                  </Button>
-                );
-              }
-            )}
+              return (
+                <Button
+                  key={step}
+                  variant={isMinus ? 'score-minus' : 'score-plus'}
+                  size="small"
+                  className="host-sq-step-btn"
+                  onClick={() => handleStep(step)}
+                  aria-label={`${isMinus ? 'Subtract' : 'Add'} ${amount} seconds`}
+                >
+                  {isMinus ? `−${amount}` : `+${amount}`}
+                </Button>
+              );
+            })}
           </div>
         </div>
 
-        <div className="host-timer-actions-column">
+        <div className="host-timer-control-group host-timer-clock-control">
           <small className="host-field-caption">
             CLOCK CONTROL
           </small>
@@ -137,15 +118,11 @@ function HostTimerControls({
                 className={`rbp-icon-btn rbp-icon-btn-small ${
                   timer.running ? 'rbp-button-warning' : 'rbp-button-success'
                 }`}
-                onClick={
-                  timer.running ? onPause : onStart
-                }
+                onClick={timer.running ? onPause : onStart}
                 id={
                   timer.running ? 'btn-host-pause-timer' : 'btn-host-start-timer'
                 }
-                aria-label={
-                  timer.running ? 'Pause' : 'Start'
-                }
+                aria-label={timer.running ? 'Pause' : 'Start'}
               >
                 <i
                   className={

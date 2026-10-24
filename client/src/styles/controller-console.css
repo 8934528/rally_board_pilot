@@ -297,3 +297,43 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+
+.round-middle-row {
+  max-width: 420px;
+}
+
+.round-name-input,
+.round-badge-pill {
+  max-width: 420px;
+}
+
+.round-name-input {
+  width: min(100%, 420px);
+}
+
+.round-badge-pill {
+  width: min(100%, 420px);
+  overflow: hidden;
+}
+
+.round-pill-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.setup-config-card,
+.monitor-preview-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+#setup-monitor-row {
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+}
+
+#monitor-preview-card .board-preview-frame {
+  max-width: 100%;
+}
+

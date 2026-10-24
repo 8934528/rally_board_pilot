@@ -1342,3 +1342,143 @@
   }
 }
 
+
+
+
+.controller-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+
+.controller-sidebar {
+  flex: 0 0 210px;
+  width: 210px;
+  min-width: 210px;
+  align-self: stretch;
+}
+
+.controller-main {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+
+.score-control-card {
+  padding: 12px 14px;
+}
+
+.score-control-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 6fr) minmax(96px, 3fr) minmax(96px, 3fr);
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+}
+
+.score-control-score-column,
+.score-control-action-column {
+  min-width: 0;
+}
+
+.score-control-score-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 4px;
+}
+
+.score-control-team-marker {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+}
+
+.score-control-action-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 2px;
+}
+
+.score-control-minus-column {
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: 7px;
+}
+
+.score-control-plus-column {
+  border-left: 1px solid var(--color-border-subtle);
+  padding-left: 7px;
+}
+
+.score-action-team-name {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+  font-size: 0.72rem;
+  font-weight: 900;
+  margin-bottom: 1px;
+}
+
+.score-action-label {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  margin-bottom: 5px;
+}
+
+.score-square-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  min-width: 0;
+}
+
+.score-square-btn {
+  width: 100%;
+  min-width: 0;
+}
+
+.live-score-display {
+  margin: 2px 0 0;
+}
+
+@media (max-width: 900px) {
+  .controller-layout {
+    display: block;
+  }
+
+  .controller-sidebar {
+    display: none;
+  }
+
+  .score-control-grid {
+    grid-template-columns: minmax(0, 6fr) minmax(92px, 3fr) minmax(92px, 3fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .score-control-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .score-control-score-column {
+    grid-column: 1 / -1;
+  }
+
+  .score-control-minus-column,
+  .score-control-plus-column {
+    border-left: 0;
+    border-top: 1px solid var(--color-border-subtle);
+    padding: 8px 0 0;
+  }
+}
+

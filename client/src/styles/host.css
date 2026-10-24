@@ -423,3 +423,185 @@
     justify-content: flex-start;
   }
 }
+
+
+
+.host-team-round-row {
+  align-items: stretch;
+}
+
+.host-col-4 {
+  min-width: 0;
+}
+
+.host-round-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.host-round-column .host-top-controls-bar {
+  flex: 0 0 auto;
+  min-height: 34px;
+}
+
+.host-round-column .host-round-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.host-score-card {
+  padding: 12px 14px;
+}
+
+.host-score-content-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 1fr);
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.host-score-game-state {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+}
+
+.host-score-digits {
+  font-size: clamp(3.4rem, 5vw, 4.5rem);
+  margin: 0;
+}
+
+.host-score-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+}
+
+.host-pt-btn {
+  height: 38px;
+  font-size: 0.78rem;
+}
+
+.host-timer-card-panel {
+  padding: 14px 16px;
+  gap: 14px;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.host-timer-main-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.host-timer-display-block {
+  min-width: 0;
+}
+
+.host-timer-readout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.host-timer-digits {
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.host-timer-badge {
+  font-size: 0.72rem;
+  padding: 3px 7px;
+}
+
+.host-timer-controls-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.host-timer-control-group {
+  min-width: 0;
+}
+
+.host-timer-clock-control {
+  padding-left: 16px;
+  border-left: 1px solid var(--color-border-subtle);
+}
+
+.host-field-caption {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.68rem;
+}
+
+.host-square-2x2-grid {
+  grid-template-columns: repeat(2, minmax(42px, 1fr));
+  grid-template-rows: repeat(2, 34px);
+  max-width: 108px;
+  gap: 5px;
+}
+
+.host-sq-step-btn {
+  width: 100%;
+  height: 34px;
+  font-size: 0.76rem;
+}
+
+.host-timer-action-buttons {
+  gap: 8px;
+  align-items: center;
+}
+
+.host-timer-action-buttons .rbp-icon-btn {
+  width: 40px;
+  height: 40px;
+}
+
+@media (max-width: 900px) {
+  .host-score-content-row {
+    grid-template-columns: minmax(0, 1fr) minmax(130px, 1fr);
+  }
+
+  .host-timer-controls-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .host-score-content-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .host-score-buttons {
+    width: 100%;
+  }
+
+  .host-timer-controls-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .host-timer-clock-control {
+    padding-left: 0;
+    padding-top: 10px;
+    border-left: 0;
+    border-top: 1px solid var(--color-border-subtle);
+  }
+}
+

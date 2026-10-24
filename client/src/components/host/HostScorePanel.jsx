@@ -26,40 +26,44 @@ function HostScorePanel({
         </h2>
       </div>
 
-      <strong
-        className="host-score-digits"
-        id={`host-score-digits-${team}`}
-      >
-        {data.score}
-      </strong>
+      <div className="host-score-content-row">
+        <div className="host-score-game-state">
+          <strong
+            className="host-score-digits"
+            id={`host-score-digits-${team}`}
+          >
+            {data.score}
+          </strong>
+        </div>
 
-      <div
-        className="host-score-buttons"
-        role="group"
-        aria-label={`Points for Team ${team}`}
-      >
-        {[-5, -1, 1, 5].map((pts) => {
-          const isMinus = pts < 0;
-          const amount = Math.abs(pts);
+        <div
+          className="host-score-buttons"
+          role="group"
+          aria-label={`Points for Team ${team}`}
+        >
+          {[-5, -1, 1, 5].map((pts) => {
+            const isMinus = pts < 0;
+            const amount = Math.abs(pts);
 
-          return (
-            <Button
-              key={pts}
-              variant={
-                isMinus ? 'score-minus' : 'score-plus'
-              }
-              size="small"
-              className="host-pt-btn"
-              onClick={() =>
-                isMinus
-                  ? onSubtract(team, amount)
-                  : onAdd(team, amount)
-              }
-            >
-              {isMinus ? `−${amount}` : `+${amount}`}
-            </Button>
-          );
-        })}
+            return (
+              <Button
+                key={pts}
+                variant={
+                  isMinus ? 'score-minus' : 'score-plus'
+                }
+                size="small"
+                className="host-pt-btn"
+                onClick={() =>
+                  isMinus
+                    ? onSubtract(team, amount)
+                    : onAdd(team, amount)
+                }
+              >
+                {isMinus ? `−${amount}` : `+${amount}`}
+              </Button>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

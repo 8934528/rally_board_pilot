@@ -28,7 +28,8 @@ function ScoreControls({
       variant={type === 'minus' ? 'score-minus' : 'score-plus'}
       size="small"
       className="score-step-btn score-square-btn"
-      onClick={() => type === 'minus' ? onSubtract(team, item.value) : onAdd(team, item.value)
+      onClick={() =>
+        type === 'minus' ? onSubtract(team, item.value) : onAdd(team, item.value)
       }
     >
       {item.label}
@@ -36,50 +37,64 @@ function ScoreControls({
   );
 
   return (
-    <article className="control-card score-control-card" id={`score-card-${team}`}>
-      <div className="control-card-header">
-        <div className="team-header-info">
-          <span
-            className={`team-badge ${
-              team === 'A' ? 'team-a-badge' : 'team-b-badge'
-            }`}
-          >
-            TEAM {team}
-          </span>
-          <h2 className="team-title-text">{teamData.name}</h2>
-        </div>
+    <article
+      className="control-card score-control-card"
+      id={`score-card-${team}`}
+      style={{ '--team-accent-col': teamData.color }}
+    >
+      <div className="score-control-grid">
+        <div className="score-control-score-column">
+          <div className="score-control-team-marker">
+            <span
+              className={`team-badge ${
+                team === 'A' ? 'team-a-badge' : 'team-b-badge'
+              }`}
+            >
+              TEAM {team}
+            </span>
 
-        <div
-          className="color-preview-indicator"
-          style={{
-            backgroundColor: teamData.color
-          }}
-          title={`${teamData.name} color: ${teamData.color}`}
-        />
-      </div>
+            <span
+              className="color-preview-indicator"
+              style={{ backgroundColor: teamData.color }}
+              title={`${teamData.name} color: ${teamData.color}`}
+            />
+          </div>
 
-      <div className="live-score-display" id={`live-score-${team}`}>
-        {formatScore(teamData.score)}
-      </div>
-
-      <div className="row g-2 score-split-row">
-        <div className="col-4">
           <div
-            className="score-square-grid score-square-grid-minus"
-            role="group"
-            aria-label={`Subtract points for Team ${team}`}
+            className="live-score-display"
+            id={`live-score-${team}`}
           >
-            {SUBTRACT_BUTTONS.map((item) => renderButton(item, 'minus'))}
+            {formatScore(teamData.score)}
           </div>
         </div>
 
-        <div className="col-8">
+        
+          <span className="score-action-team-name">
+            {teamData.name}
+          </span>
+
+        <div className="score-control-action-column score-control-minus-column">
+
+          <div className="score-square-grid score-square-grid-minus"
+            role="group"
+            aria-label={`Subtract points for Team ${team}`}
+          >
+            {SUBTRACT_BUTTONS.map((item) =>
+              renderButton(item, 'minus')
+            )}
+          </div>
+        </div>
+
+        <div className="score-control-action-column score-control-plus-column">
+
           <div
             className="score-square-grid score-square-grid-plus"
             role="group"
             aria-label={`Add points for Team ${team}`}
           >
-            {ADD_BUTTONS.map((item) => renderButton(item, 'plus'))}
+            {ADD_BUTTONS.map((item) =>
+              renderButton(item, 'plus')
+            )}
           </div>
         </div>
       </div>
