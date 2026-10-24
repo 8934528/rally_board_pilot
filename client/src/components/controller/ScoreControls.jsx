@@ -1,15 +1,18 @@
 import Button from '../common/Button';
 import { formatScore } from '../../utils/formatScore';
 
-const SCORE_BUTTONS = [
-  { value: 10, type: 'minus', label: '−10' },
-  { value: 5,  type: 'minus', label: '−5' },
-  { value: 2,  type: 'minus', label: '−2' },
-  { value: 1,  type: 'minus', label: '−1' },
-  { value: 1,  type: 'plus',  label: '+1' },
-  { value: 2,  type: 'plus',  label: '+2' },
-  { value: 5,  type: 'plus',  label: '+5' },
-  { value: 10, type: 'plus',  label: '+10' }
+const SUBTRACT_BUTTONS = [
+  { value: 10, label: '−10' },
+  { value: 5, label: '−5' },
+  { value: 2, label: '−2' },
+  { value: 1, label: '−1' }
+];
+
+const ADD_BUTTONS = [
+  { value: 1, label: '+1' },
+  { value: 2, label: '+2' },
+  { value: 5, label: '+5' },
+  { value: 10, label: '+10' }
 ];
 
 function ScoreControls({
@@ -18,6 +21,20 @@ function ScoreControls({
   onAdd,
   onSubtract
 }) {
+  const renderButton = (item, type) => (
+    <Button
+      key={`${team}-${type}-${item.value}`}
+      id={`btn-score-${team}-${type}-${item.value}`}
+      variant={type === 'minus' ? 'score-minus' : 'score-plus'}
+      size="small"
+      className="score-step-btn score-square-btn"
+      onClick={() => type === 'minus' ? onSubtract(team, item.value) : onAdd(team, item.value)
+      }
+    >
+      {item.label}
+    </Button>
+  );
+
   return (
     <article className="control-card score-control-card" id={`score-card-${team}`}>
       <div className="control-card-header">
@@ -45,23 +62,26 @@ function ScoreControls({
         {formatScore(teamData.score)}
       </div>
 
-      <div className="score-buttons-grid" role="group" aria-label={`Score adjustment for Team ${team}`}>
-        {SCORE_BUTTONS.map((item) => (
-          <Button
-            key={`${team}-${item.type}-${item.value}`}
-            id={`btn-score-${team}-${item.type}-${item.value}`}
-            variant={item.type === 'minus' ? 'score-minus' : 'score-plus'}
-            size="small"
-            className="score-step-btn"
-            onClick={() =>
-              item.type === 'minus'
-                ? onSubtract(team, item.value)
-                : onAdd(team, item.value)
-            }
+      <div className="row g-2 score-split-row">
+        <div className="col-4">
+          <div
+            className="score-square-grid score-square-grid-minus"
+            role="group"
+            aria-label={`Subtract points for Team ${team}`}
           >
-            {item.label}
-          </Button>
-        ))}
+            {SUBTRACT_BUTTONS.map((item) => renderButton(item, 'minus'))}
+          </div>
+        </div>
+
+        <div className="col-8">
+          <div
+            className="score-square-grid score-square-grid-plus"
+            role="group"
+            aria-label={`Add points for Team ${team}`}
+          >
+            {ADD_BUTTONS.map((item) => renderButton(item, 'plus'))}
+          </div>
+        </div>
       </div>
     </article>
   );

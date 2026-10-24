@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 function Tooltip({
   content,
@@ -8,26 +9,60 @@ function Tooltip({
   className = ''
 }) {
   const [visible, setVisible] = useState(false);
-  const [timer, setTimer] = useState(null);
+  const [anchor, setAnchor] = useState(null);
+  const wrapperRef = useRef(null);
+  const showTimerRef = useRef(null);
+
+  const clearShowTimer = () => {
+    if (showTimerRef.current) {
+      clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
+  };
+
+  const showTooltip = () => {
+    clearShowTimer();
+    showTimerRef.current = setTimeout(() => {
+      const el = wrapperRef.current;
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        setAnchor({
+          x: rect.left + rect.width / 2,
+          y: position === 'bottom' ? rect.bottom : rect.top
+        });
+      }
+      setVisible(true);
+    }, delay);
+  };
+
+  const hideTooltip = () => {
+    clearShowTimer();
+    setVisible(false);
+  };
+
+  
+  
+  useEffect(() => {
+    if (!visible) return undefined;
+
+    window.addEventListener('scroll', hideTooltip, true);
+    window.addEventListener('resize', hideTooltip);
+
+    return () => {
+      window.removeEventListener('scroll', hideTooltip, true);
+      window.removeEventListener('resize', hideTooltip);
+    };
+  }, [visible]);
+
+  useEffect(() => () => clearShowTimer(), []);
 
   if (!content) {
     return children;
   }
 
-  const showTooltip = () => {
-    const t = setTimeout(() => {
-      setVisible(true);
-    }, delay);
-    setTimer(t);
-  };
-
-  const hideTooltip = () => {
-    if (timer) clearTimeout(timer);
-    setVisible(false);
-  };
-
   return (
     <div
+      ref={wrapperRef}
       className={`rbp-tooltip-wrapper ${className}`}
       onMouseEnter={showTooltip}
       onMouseLeave={hideTooltip}
@@ -35,14 +70,16 @@ function Tooltip({
       onBlur={hideTooltip}
     >
       {children}
-      {visible && (
+      {visible && anchor && createPortal(
         <div
           role="tooltip"
           className={`rbp-tooltip rbp-tooltip-${position}`}
+          style={{ left: `${anchor.x}px`, top: `${anchor.y}px` }}
           aria-hidden="false"
         >
           {content}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

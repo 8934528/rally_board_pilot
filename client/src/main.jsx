@@ -11,6 +11,7 @@ import './styles/controller.css';
 import './styles/host.css';
 import './styles/themes.css';
 import './styles/animations.css';
+import './styles/controller-console.css';
 
 import App from './App';
 

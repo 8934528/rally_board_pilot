@@ -29,7 +29,10 @@ export function useKeyboardShortcuts(shortcutsMap = {}, enabled = true) {
 
       if (!event.ctrlKey) return;
 
-      const handler = typeof shortcutsMap[key] === 'function' ? shortcutsMap[key] : typeof shortcutsMap[`ctrl+${key}`] === 'function' ? shortcutsMap[`ctrl+${key}`] : code === 'space' && typeof shortcutsMap.space === 'function' ? shortcutsMap.space : code === 'space' && typeof shortcutsMap['ctrl+space'] === 'function' ? shortcutsMap['ctrl+space'] : null;
+      
+      const shiftedHandler = event.shiftKey && typeof shortcutsMap[`shift+${key}`] === 'function' ? shortcutsMap[`shift+${key}`] : null;
+
+      const handler = shiftedHandler || (typeof shortcutsMap[key] === 'function' ? shortcutsMap[key] : typeof shortcutsMap[`ctrl+${key}`] === 'function' ? shortcutsMap[`ctrl+${key}`] : code === 'space' && typeof shortcutsMap.space === 'function' ? shortcutsMap.space : code === 'space' && typeof shortcutsMap['ctrl+space'] === 'function' ? shortcutsMap['ctrl+space'] : null);
 
       if (typeof handler === 'function') {
         event.preventDefault();

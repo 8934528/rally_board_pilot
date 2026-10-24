@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
+import { BOARD_PAGES } from '../constants/pages';
 
 import ControllerSidebar from '../components/controller/ControllerSidebar';
 import ScoreControls from '../components/controller/ScoreControls';
@@ -11,6 +12,7 @@ import QuickActions from '../components/controller/QuickActions';
 import BoardDirector from '../components/controller/BoardDirector';
 import RoundDirector from '../components/controller/RoundDirector';
 import BoardPreview from '../components/controller/BoardPreview';
+import AnnouncementControl from '../components/controller/AnnouncementControl';
 import ThemeEditor from '../components/controller/ThemeEditor';
 import FullscreenButton from '../components/common/FullscreenButton';
 import ConnectionStatus from '../components/common/ConnectionStatus';
@@ -32,6 +34,9 @@ function ControllerPage() {
   const [themeModalOpen, setThemeModalOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
 
+  const [announcementEditing, setAnnouncementEditing] = useState(false);
+  const [announcementDraft, setAnnouncementDraft] = useState(null);
+
   const shortcuts = useMemo(
     () => ({
       l: () => controller.updateStatus('LIVE'),
@@ -50,7 +55,7 @@ function ControllerPage() {
           controller.startTimer();
         }
       },
-      w: () => {
+      'shift+x': () => {
         controller.spinWheel();
       },
       t: () => {
@@ -71,8 +76,56 @@ function ControllerPage() {
     );
   }
 
+  const boardPage = gameState.board.activePage;
+  const draftText = announcementDraft ?? gameState.announcement.text ?? '';
+  const isAnnouncementOnBoard = boardPage === BOARD_PAGES.ANNOUNCEMENT && Boolean(gameState.announcement.visible);
+
   const handleReset = () => {
     controller.resetGame();
+  };
+
+  const pushAnnouncementToBoard = (text, visible) => {
+    controller.updateAnnouncement(gameState.announcement.title || '', text, visible);
+    controller.changePage(visible ? BOARD_PAGES.ANNOUNCEMENT : BOARD_PAGES.SCOREBOARD);
+  };
+
+  const handleAnnouncementToggle = () => {
+    if (isAnnouncementOnBoard) {
+      pushAnnouncementToBoard(gameState.announcement.text || '', false);
+      return;
+    }
+
+    const text = draftText.trim();
+    if (!text) return;
+
+    pushAnnouncementToBoard(text, true);
+  };
+
+  const handleAnnouncementDraftChange = (value) => {
+    setAnnouncementDraft(value);
+
+    if (isAnnouncementOnBoard && !value.trim()) {
+      pushAnnouncementToBoard('', false);
+    }
+  };
+
+  const handlePageSelect = (page) => {
+    if (page === BOARD_PAGES.ANNOUNCEMENT) {
+      setAnnouncementEditing(true);
+      return;
+    }
+
+    setAnnouncementEditing(false);
+
+    if (gameState.announcement.visible) {
+      controller.updateAnnouncement(
+        gameState.announcement.title || '',
+        gameState.announcement.text || '',
+        false
+      );
+    }
+
+    controller.changePage(page);
   };
 
   return (
@@ -122,13 +175,13 @@ function ControllerPage() {
       </header>
 
       <div className="controller-layout" id="controller-layout">
-        {/* Desktop Sidebar */}
+        {/* Desktop Sidebar (fixed; see controller-console.css) */}
         <ControllerSidebar
-          activePage={gameState.board.activePage}
+          activePage={announcementEditing ? BOARD_PAGES.ANNOUNCEMENT : boardPage}
           status={gameState.status}
           timerSeconds={gameState.timer.seconds}
           isTimerRunning={gameState.timer.running}
-          onPageChange={controller.changePage}
+          onPageChange={handlePageSelect}
           onStatusChange={controller.updateStatus}
           onOpenTimerModal={() => setTimerModalOpen(true)}
           onOpenThemeModal={() => setThemeModalOpen(true)}
@@ -204,7 +257,7 @@ function ControllerPage() {
               <div className="wide-card-heading">
                 <div>
                   <div className="eyebrow">MONITOR</div>
-                  <h2>Live Screen Preview</h2>
+                  <h2>{announcementEditing ? 'Announcement Control' : 'Live Screen Preview'}</h2>
                 </div>
                 <button
                   type="button"
@@ -215,7 +268,18 @@ function ControllerPage() {
                   <i className="bi bi-palette" /> Edit Theme
                 </button>
               </div>
-              <BoardPreview gameState={gameState} />
+
+              {announcementEditing ? (
+                <AnnouncementControl
+                  gameState={gameState}
+                  draftText={draftText}
+                  onDraftChange={handleAnnouncementDraftChange}
+                  isOnBoard={isAnnouncementOnBoard}
+                  onToggle={handleAnnouncementToggle}
+                />
+              ) : (
+                <BoardPreview gameState={gameState} />
+              )}
             </section>
           </div>
         </main>
@@ -279,9 +343,9 @@ function ControllerPage() {
           <div className="drawer-section">
             <span className="drawer-section-title">BOARD VIEW</span>
             <PageManager
-              activePage={gameState.board.activePage}
+              activePage={announcementEditing ? BOARD_PAGES.ANNOUNCEMENT : boardPage}
               onChange={(p) => {
-                controller.changePage(p);
+                handlePageSelect(p);
                 setMobileDrawerOpen(false);
               }}
             />

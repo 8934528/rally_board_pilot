@@ -16,7 +16,7 @@ const SEGMENT_COLORS = [
   '#8B5CF6'
 ];
 
-function WheelPage({ gameState, mini = false }) {
+function WheelPage({ gameState, mini = false, showResultModal = true }) {
   const entries = gameState?.wheel?.entries || [];
   const spinning = gameState?.wheel?.spinning;
   const result = gameState?.wheel?.result;
@@ -95,7 +95,7 @@ function WheelPage({ gameState, mini = false }) {
         </div>
       </div>
 
-      {!mini && (
+      {!mini && showResultModal && (
         <Modal
           open={resultModalOpen}
           onClose={() => setResultModalOpen(false)}

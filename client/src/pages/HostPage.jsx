@@ -38,7 +38,7 @@ function HostPage() {
         }
       },
 
-      w: () => host.spinWheel(),
+      'shift+x': () => host.spinWheel(),
 
       space: () => {
         if (gameState?.timer?.running) {

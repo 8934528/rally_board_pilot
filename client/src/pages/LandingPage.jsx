@@ -84,28 +84,6 @@ function LandingPage() {
 
           <i className="bi bi-arrow-right landing-card-arrow" />
         </Link>
-
-        <Link
-          to="/activity"
-          className="landing-card activity-card"
-          id="landing-activity-link"
-        >
-          <div className="landing-card-icon">
-            <i className="bi bi-clock-history" />
-          </div>
-
-          <div className="landing-card-body">
-            <div className="landing-card-title">
-              Activity History
-            </div>
-
-            <div className="landing-card-desc">
-              Dedicated ScrollSpy log of all game events, score adjustments, and rounds.
-            </div>
-          </div>
-
-          <i className="bi bi-arrow-right landing-card-arrow" />
-        </Link>
       </div>
 
       <div className="landing-footer">

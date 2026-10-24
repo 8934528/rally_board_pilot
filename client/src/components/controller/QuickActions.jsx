@@ -56,12 +56,6 @@ function QuickActions({
           <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
         </button>
       </Tooltip>
-
-      <span className="quick-actions-shortcut-legend d-none d-md-inline-flex">
-        <span className="rbp-shortcut-badge">CTRL + L</span>
-        <span className="rbp-shortcut-badge">CTRL + P</span>
-        <span className="rbp-shortcut-badge">CTRL + R</span>
-      </span>
     </div>
   );
 }

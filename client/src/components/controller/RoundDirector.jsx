@@ -20,13 +20,49 @@ function RoundDirector({
 
   return (
     <div className="round-director-panel" id="round-director-panel">
-      <div className="round-director-header">
-        <div>
-          <div className="eyebrow">ROUND DIRECTOR</div>
-          <h2 className="panel-title-text">Round Configuration</h2>
+      <div className="round-director-layout">
+        <div className="round-col round-col-config">
+          <div>
+            <div className="eyebrow">ROUND DIRECTOR</div>
+            <h2 className="panel-title-text">Round Configuration</h2>
+          </div>
+
+          <label className="field-label">Round Number</label>
+          <RotaryWheel
+            value={round.number}
+            min={1}
+            max={99}
+            onChange={handleNumberChange}
+            label="Round Number Selector"
+          />
         </div>
 
-        <div className="round-actions-wrap">
+        <div className="round-col round-col-middle">
+          <div className="round-middle-row">
+            <label htmlFor="roundNameInput" className="field-label">
+              Round Title
+            </label>
+            <input
+              id="roundNameInput"
+              type="text"
+              className="round-name-input"
+              value={round.name}
+              maxLength={40}
+              onChange={handleNameChange}
+              placeholder="e.g. Semi Finals, Speed Round..."
+            />
+          </div>
+
+          <div className="round-middle-row">
+            <label className="field-label">Live Board Preview</label>
+            <div className="round-badge-pill">
+              <span className="round-pill-number">R{round.number}</span>
+              <span className="round-pill-title">{round.name}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="round-col round-col-next">
           <Button
             variant="primary"
             size="small"
@@ -38,42 +74,6 @@ function RoundDirector({
             <span>Next Round</span>
             <span className="rbp-shortcut-badge">CTRL + N</span>
           </Button>
-        </div>
-      </div>
-
-      <div className="round-controls-grid">
-        <div className="round-rotary-column">
-          <label className="field-label">Round Number</label>
-          <RotaryWheel
-            value={round.number}
-            min={1}
-            max={99}
-            onChange={handleNumberChange}
-            label="Round Number Selector"
-          />
-        </div>
-
-        <div className="round-name-column">
-          <label htmlFor="roundNameInput" className="field-label">
-            Round Title
-          </label>
-          <input
-            id="roundNameInput"
-            type="text"
-            className="round-name-input"
-            value={round.name}
-            maxLength={40}
-            onChange={handleNameChange}
-            placeholder="e.g. Semi Finals, Speed Round..."
-          />
-        </div>
-
-        <div className="round-preview-column">
-          <label className="field-label">Live Board Preview</label>
-          <div className="round-badge-pill">
-            <span className="round-pill-number">R{round.number}</span>
-            <span className="round-pill-title">{round.name}</span>
-          </div>
         </div>
       </div>
     </div>
