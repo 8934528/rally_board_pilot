@@ -175,7 +175,6 @@ function ControllerPage() {
       </header>
 
       <div className="controller-layout" id="controller-layout">
-        {/* Desktop Sidebar (fixed; see controller-console.css) */}
         <ControllerSidebar
           activePage={announcementEditing ? BOARD_PAGES.ANNOUNCEMENT : boardPage}
           status={gameState.status}
