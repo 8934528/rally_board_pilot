@@ -4,6 +4,8 @@ import { useGame } from '../context/GameContext';
 import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import FullscreenButton from '../components/common/FullscreenButton';
 import ConnectionStatus from '../components/common/ConnectionStatus';
+import SoundToggle from '../components/common/SoundToggle';
+import { deriveGameStats } from '../utils/statsDeriver';
 
 const CATEGORIES = [
   { id: 'all', label: 'All Activities', icon: 'list-ul' },
@@ -15,13 +17,15 @@ const CATEGORIES = [
 ];
 
 function ActivityPage() {
-  useDocumentTitle('RBP - ACTIVITY');
+  useDocumentTitle('RBP - ACTIVITY & STATS');
   const { gameState, connected } = useGame();
 
+  const [viewMode, setViewMode] = useState('log'); // 'log' | 'stats'
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeSpySection, setActiveSpySection] = useState('all');
   const scrollContainerRef = useRef(null);
 
+  const stats = deriveGameStats(gameState);
   const activities = gameState?.activities || [];
 
   const filteredActivities = activities.filter((item) => {
@@ -38,7 +42,7 @@ function ActivityPage() {
   // ScrollSpy observer
   useEffect(() => {
     const container = scrollContainerRef.current;
-    if (!container) return;
+    if (!container || viewMode !== 'log') return;
 
     const sections = container.querySelectorAll('.activity-spy-section');
     const handleScroll = () => {
@@ -59,9 +63,10 @@ function ActivityPage() {
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [viewMode]);
 
   const scrollToSection = (sectionId) => {
+    setViewMode('log');
     setActiveCategory('all');
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -92,11 +97,33 @@ function ActivityPage() {
             <span>CONTROLLER</span>
           </Link>
           <div className="activity-page-title">
-            <span>ACTIVITY</span>
+            <span>ACTIVITY & STATS</span>
+          </div>
+
+          <div className="activity-view-tabs" role="tablist">
+            <button
+              type="button"
+              className={`activity-view-tab-btn ${viewMode === 'log' ? 'active' : ''}`}
+              onClick={() => setViewMode('log')}
+              id="tab-view-log"
+            >
+              <i className="bi bi-list-ul" />
+              <span>Activity Log</span>
+            </button>
+            <button
+              type="button"
+              className={`activity-view-tab-btn ${viewMode === 'stats' ? 'active' : ''}`}
+              onClick={() => setViewMode('stats')}
+              id="tab-view-stats"
+            >
+              <i className="bi bi-graph-up" />
+              <span>Game Stats</span>
+            </button>
           </div>
         </div>
 
         <div className="activity-topbar-right">
+          <SoundToggle id="activity-sound-toggle" />
           <ConnectionStatus connected={connected} dotOnly={true} />
           <FullscreenButton />
         </div>
@@ -147,12 +174,151 @@ function ActivityPage() {
           className="activity-feed-container activity-history"
           id="activity-feed-container"
         >
-          
-          <section
-            className="activity-spy-section"
-            data-section-id="all"
-            id="section-all"
-          >
+          {viewMode === 'stats' ? (
+            <div className="activity-stats-view-content" style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '16px' }}>
+              <section className="stats-section">
+                <div className="stats-section-header">
+                  <i className="bi bi-speedometer2" aria-hidden="true" />
+                  <h3>GAME OVERVIEW</h3>
+                </div>
+                <div className="stats-overview-grid">
+                  <div className="stat-card">
+                    <span className="stat-label">STATUS</span>
+                    <strong className={`stat-value status-${stats?.game?.status?.toLowerCase()}`}>{stats?.game?.status}</strong>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-label">DURATION</span>
+                    <strong className="stat-value">{stats?.game?.duration}</strong>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-label">ROUNDS PLAYED</span>
+                    <strong className="stat-value">{stats?.game?.roundsPlayed}</strong>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-label">QUESTIONS ASKED</span>
+                    <strong className="stat-value">{stats?.game?.questionsAsked}</strong>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-label">WHEEL SPINS</span>
+                    <strong className="stat-value">{stats?.game?.wheelSpins}</strong>
+                  </div>
+                  <div className="stat-card">
+                    <span className="stat-label">ANNOUNCEMENTS</span>
+                    <strong className="stat-value">{stats?.game?.announcements}</strong>
+                  </div>
+                </div>
+              </section>
+
+              <section className="stats-section">
+                <div className="stats-section-header">
+                  <i className="bi bi-people" aria-hidden="true" />
+                  <h3>TEAM PERFORMANCE</h3>
+                </div>
+                <div className="stats-teams-grid">
+                  {['A', 'B'].map((teamKey) => {
+                    const team = stats?.teams?.[teamKey] || {};
+                    return (
+                      <div key={teamKey} className="team-stat-box" style={{ '--team-col': team.color }}>
+                        <div className="team-stat-header">
+                          <span className="team-stat-badge">TEAM {teamKey}</span>
+                          <h4 className="team-stat-name">{team.name}</h4>
+                          <span className="team-stat-score">{team.currentScore} PTS</span>
+                        </div>
+                        <div className="team-stat-details">
+                          <div className="team-stat-row">
+                            <span>Points Gained / Lost:</span>
+                            <strong>+{team.pointsGained} / -{team.pointsLost}</strong>
+                          </div>
+                          <div className="team-stat-row">
+                            <span>Questions Answered:</span>
+                            <strong>{team.questionsAnswered}</strong>
+                          </div>
+                          <div className="team-stat-row">
+                            <span>Correct / Incorrect:</span>
+                            <strong className="text-success">{team.correctAnswers}</strong> / <strong className="text-danger">{team.incorrectAnswers}</strong>
+                          </div>
+                          <div className="team-stat-row">
+                            <span>Accuracy:</span>
+                            <strong className="team-accuracy-pill">{team.accuracy}</strong>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+
+              <div className="stats-dual-row">
+                <section className="stats-section flex-1">
+                  <div className="stats-section-header">
+                    <i className="bi bi-patch-question" aria-hidden="true" />
+                    <h3>QUESTIONS METRICS</h3>
+                  </div>
+                  <div className="stats-detail-list">
+                    <div className="stats-detail-item">
+                      <span>Total Asked:</span>
+                      <strong>{stats?.questions?.asked}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Correct Answers:</span>
+                      <strong className="text-success">{stats?.questions?.correct}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Incorrect Answers:</span>
+                      <strong className="text-danger">{stats?.questions?.incorrect}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Overall Accuracy:</span>
+                      <strong>{stats?.questions?.accuracy}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Points Earned:</span>
+                      <strong>{stats?.questions?.pointsEarned}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Avg Pts per Question:</span>
+                      <strong>{stats?.questions?.avgPointsPerQuestion}</strong>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="stats-section flex-1">
+                  <div className="stats-section-header">
+                    <i className="bi bi-arrow-repeat" aria-hidden="true" />
+                    <h3>WHEEL METRICS</h3>
+                  </div>
+                  <div className="stats-detail-list">
+                    <div className="stats-detail-item">
+                      <span>Total Spins:</span>
+                      <strong>{stats?.wheel?.totalSpins}</strong>
+                    </div>
+                    <div className="stats-detail-item">
+                      <span>Most Common Result:</span>
+                      <strong>{stats?.wheel?.mostCommonResult}</strong>
+                    </div>
+                  </div>
+                  {stats?.wheel?.resultFrequency && Object.keys(stats.wheel.resultFrequency).length > 0 && (
+                    <div className="wheel-freq-chips">
+                      <span className="wheel-freq-label">Result Frequencies:</span>
+                      <div className="wheel-freq-list">
+                        {Object.entries(stats.wheel.resultFrequency).map(([res, cnt]) => (
+                          <span key={res} className="wheel-freq-tag">
+                            {res} <span className="freq-count">x{cnt}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </section>
+              </div>
+            </div>
+          ) : (
+            <>
+              <section
+                className="activity-spy-section"
+                data-section-id="all"
+                id="section-all"
+              >
             <div className="section-sticky-header">
               <i className="bi bi-clock-history" />
               <h2>LIVE ACTIVITY FEED</h2>
@@ -307,6 +473,8 @@ function ActivityPage() {
               </div>
             )}
           </section>
+          </>
+          )}
         </main>
       </div>
     </div>

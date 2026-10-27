@@ -2,10 +2,10 @@ import Button from '../common/Button';
 import { formatScore } from '../../utils/formatScore';
 
 const SUBTRACT_BUTTONS = [
-  { value: 10, label: '−10' },
-  { value: 5, label: '−5' },
-  { value: 2, label: '−2' },
-  { value: 1, label: '−1' }
+  { value: 1, label: '-1' },
+  { value: 2, label: '-2' },
+  { value: 5, label: '-5' },
+  { value: 10, label: '-10' }
 ];
 
 const ADD_BUTTONS = [

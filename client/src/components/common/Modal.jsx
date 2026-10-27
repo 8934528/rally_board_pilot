@@ -6,7 +6,8 @@ function Modal({
   children,
   onClose,
   footer,
-  size = 'medium'
+  size = 'medium',
+  className = ''
 }) {
   const modalRef = useRef(null);
 
@@ -40,7 +41,7 @@ function Modal({
 
       <div
         ref={modalRef}
-        className={`rbp-modal rbp-modal-${size}`}
+        className={`rbp-modal rbp-modal-${size} ${className}`.trim()}
         onMouseDown={(event) => event.stopPropagation()}>
 
         <div className="rbp-modal-header">

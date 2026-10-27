@@ -27,5 +27,22 @@ export const GAME_EVENTS = {
 
   WINNER_UPDATE: 'game:winner:update',
 
-  RESET_GAME: 'game:reset'
+  RESET_GAME: 'game:reset',
+
+  UNDO: 'game:undo',
+  REDO: 'game:redo',
+
+  PERMISSION_UPDATE: 'game:permissions:update',
+  PERMISSION_DENIED: 'game:permissions:denied',
+
+  QUESTION_SET: 'game:question:set',
+  QUESTION_SHOW: 'game:question:show',
+  QUESTION_REVEAL: 'game:question:reveal',
+  QUESTION_CLEAR: 'game:question:clear',
+  QUESTION_MARK: 'game:question:mark',
+
+  STATS_REQUEST: 'game:stats:request',
+  STATS_UPDATE: 'game:stats:update',
+
+  ROLE_REGISTER: 'game:role:register',
 };

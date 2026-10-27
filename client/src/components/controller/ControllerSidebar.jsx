@@ -16,7 +16,10 @@ function ControllerSidebar({
   onPageChange,
   onStatusChange,
   onOpenTimerModal,
-  onOpenThemeModal
+  onOpenThemeModal,
+  onOpenPermissionsModal,
+  onOpenQuestionModal,
+  onOpenStatsModal
 }) {
   return (
     <aside className="controller-sidebar" id="controller-sidebar">
@@ -54,6 +57,36 @@ function ControllerSidebar({
 
       <div className="sidebar-section">
         <div className="sidebar-heading">TOOLS & CONFIG</div>
+        <button
+          type="button"
+          id="btn-sidebar-permissions"
+          className="sidebar-tool-btn"
+          onClick={onOpenPermissionsModal}
+        >
+          <i className="bi bi-shield-lock" />
+          <span>Host Permissions</span>
+        </button>
+
+        <button
+          type="button"
+          id="btn-sidebar-questions"
+          className="sidebar-tool-btn"
+          onClick={onOpenQuestionModal}
+        >
+          <i className="bi bi-patch-question" />
+          <span>Questions</span>
+        </button>
+
+        <button
+          type="button"
+          id="btn-sidebar-stats"
+          className="sidebar-tool-btn"
+          onClick={onOpenStatsModal}
+        >
+          <i className="bi bi-graph-up" />
+          <span>Game Stats</span>
+        </button>
+
         <button
           type="button"
           id="btn-sidebar-timer"

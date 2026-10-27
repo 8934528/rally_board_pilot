@@ -1,17 +1,35 @@
 import Button from '../common/Button';
+import Tooltip from '../common/Tooltip';
+import { useGame } from '../../context/GameContext';
 
 function HostRoundControls({
   gameState,
   onRound
 }) {
-  const nextRound = () => {
-    const nextNum = gameState.round.number + 1;
+  const { hasHostPermission } = useGame();
+  const canRound = hasHostPermission('round');
 
-    onRound(
-      nextNum,
-      `Round ${nextNum}`
-    );
+  const nextRound = () => {
+    if (!canRound) return;
+    const nextNum = gameState.round.number + 1;
+    onRound(nextNum, `Round ${nextNum}`);
   };
+
+  const btn = (
+    <Button
+      variant="primary"
+      size="small"
+      onClick={nextRound}
+      disabled={!canRound}
+      id="btn-host-next-round"
+    >
+      <i className="bi bi-chevron-right" aria-hidden="true" />
+      <span>NEXT ROUND</span>
+      <span className="rbp-shortcut-badge">
+        CTRL + N
+      </span>
+    </Button>
+  );
 
   return (
     <section
@@ -34,18 +52,13 @@ function HostRoundControls({
         </div>
       </div>
 
-      <Button
-        variant="primary"
-        size="small"
-        onClick={nextRound}
-        id="btn-host-next-round"
-      >
-        <i className="bi bi-chevron-right" aria-hidden="true" />
-        <span>NEXT ROUND</span>
-        <span className="rbp-shortcut-badge">
-          CTRL + N
-        </span>
-      </Button>
+      {!canRound ? (
+        <Tooltip content="Round progression restricted by Controller">
+          <span>{btn}</span>
+        </Tooltip>
+      ) : (
+        btn
+      )}
     </section>
   );
 }

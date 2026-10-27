@@ -52,7 +52,6 @@ export function useController(socket) {
   const setTimer = (seconds) => {
     if (!socket?.connected) return;
     const val = Math.floor(Number(seconds));
-    // Strictly validate: 0 to 180 seconds (3 min max)
     if (!Number.isFinite(val) || val < 0) return;
     const clamped = Math.min(GAME_CONFIG.maxTimerSeconds, val);
     socket.emit(GAME_EVENTS.TIMER_SET, { seconds: clamped });
@@ -99,6 +98,49 @@ export function useController(socket) {
     socket.emit(GAME_EVENTS.RESET_GAME);
   };
 
+  
+  const undo = () => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.UNDO);
+  };
+
+  const redo = () => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.REDO);
+  };
+
+  
+  const updateHostPermissions = (permissions) => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.PERMISSION_UPDATE, permissions);
+  };
+
+  
+  const setQuestion = (question) => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.QUESTION_SET, { question });
+  };
+
+  const showQuestion = () => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.QUESTION_SHOW);
+  };
+
+  const revealAnswer = () => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.QUESTION_REVEAL);
+  };
+
+  const markQuestion = (team, correct, awardPoints = true) => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.QUESTION_MARK, { team, correct, awardPoints });
+  };
+
+  const clearQuestion = () => {
+    if (!socket?.connected) return;
+    socket.emit(GAME_EVENTS.QUESTION_CLEAR);
+  };
+
   return {
     addScore,
     subtractScore,
@@ -115,6 +157,14 @@ export function useController(socket) {
     spinWheel,
     updateAnnouncement,
     updateWinner,
-    resetGame
+    resetGame,
+    undo,
+    redo,
+    updateHostPermissions,
+    setQuestion,
+    showQuestion,
+    revealAnswer,
+    markQuestion,
+    clearQuestion
   };
 }

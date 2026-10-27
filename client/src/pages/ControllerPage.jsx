@@ -16,10 +16,14 @@ import AnnouncementControl from '../components/controller/AnnouncementControl';
 import ThemeEditor from '../components/controller/ThemeEditor';
 import FullscreenButton from '../components/common/FullscreenButton';
 import ConnectionStatus from '../components/common/ConnectionStatus';
+import SoundToggle from '../components/common/SoundToggle';
 import TimerConfigModal from '../components/common/TimerConfigModal';
 import Modal from '../components/common/Modal';
-import PageManager from '../components/controller/PageManager';
+import Button from '../components/common/Button';
 import WheelConfigModal from '../components/controller/WheelConfigModal';
+import HostPermissionsModal from '../components/controller/HostPermissionsModal';
+import QuestionManagerModal from '../components/controller/QuestionManagerModal';
+import GameStatsModal from '../components/controller/GameStatsModal';
 
 function ControllerPage() {
   useDocumentTitle('RBP - CONTROLLER');
@@ -27,12 +31,18 @@ function ControllerPage() {
   const {
     connected,
     gameState,
-    controller
+    controller,
+    canUndo,
+    canRedo
   } = useGame();
 
   const [timerModalOpen, setTimerModalOpen] = useState(false);
   const [themeModalOpen, setThemeModalOpen] = useState(false);
   const [wheelModalOpen, setWheelModalOpen] = useState(false);
+  const [permissionsModalOpen, setPermissionsModalOpen] = useState(false);
+  const [questionModalOpen, setQuestionModalOpen] = useState(false);
+  const [statsModalOpen, setStatsModalOpen] = useState(false);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
 
   const [announcementEditing, setAnnouncementEditing] = useState(false);
   const [announcementDraft, setAnnouncementDraft] = useState(null);
@@ -41,7 +51,10 @@ function ControllerPage() {
     () => ({
       l: () => controller.updateStatus('LIVE'),
       p: () => controller.updateStatus('PAUSED'),
-      r: () => controller.resetGame(),
+      r: () => setResetConfirmOpen(true),
+      u: () => {
+        if (canUndo) controller.undo();
+      },
       n: () => {
         if (gameState?.round) {
           const nextNum = gameState.round.number + 1;
@@ -62,7 +75,7 @@ function ControllerPage() {
         setTimerModalOpen((prev) => !prev);
       }
     }),
-    [controller, gameState?.round, gameState?.timer?.running]
+    [controller, canUndo, gameState?.round, gameState?.timer?.running]
   );
 
   useKeyboardShortcuts(shortcuts);
@@ -80,8 +93,9 @@ function ControllerPage() {
   const draftText = announcementDraft ?? gameState.announcement.text ?? '';
   const isAnnouncementOnBoard = boardPage === BOARD_PAGES.ANNOUNCEMENT && Boolean(gameState.announcement.visible);
 
-  const handleReset = () => {
+  const handleConfirmReset = () => {
     controller.resetGame();
+    setResetConfirmOpen(false);
   };
 
   const pushAnnouncementToBoard = (text, visible) => {
@@ -149,12 +163,14 @@ function ControllerPage() {
         </div>
 
         <div className="controller-header-actions">
+          <SoundToggle id="controller-sound-toggle" />
+
           <ConnectionStatus connected={connected} dotOnly={true} />
 
           <Link
             to="/activity"
             className="header-icon-link"
-            title="Activity Log"
+            title="Activity Log & Stats"
             id="header-activity-link"
           >
             <i className="bi bi-clock-history" />
@@ -175,6 +191,9 @@ function ControllerPage() {
           onStatusChange={controller.updateStatus}
           onOpenTimerModal={() => setTimerModalOpen(true)}
           onOpenThemeModal={() => setThemeModalOpen(true)}
+          onOpenPermissionsModal={() => setPermissionsModalOpen(true)}
+          onOpenQuestionModal={() => setQuestionModalOpen(true)}
+          onOpenStatsModal={() => setStatsModalOpen(true)}
         />
 
         <main className="controller-main" id="controller-main-content">
@@ -186,11 +205,14 @@ function ControllerPage() {
             <QuickActions
               onLive={() => controller.updateStatus('LIVE')}
               onPause={() => controller.updateStatus('PAUSED')}
-              onReset={handleReset}
+              onReset={() => setResetConfirmOpen(true)}
+              onUndo={controller.undo}
+              onRedo={controller.redo}
+              canUndo={canUndo}
+              canRedo={canRedo}
               status={gameState.status}
             />
           </div>
-
 
           <section className="control-grid" aria-label="Team Scores">
             <ScoreControls
@@ -215,10 +237,7 @@ function ControllerPage() {
             />
           </section>
 
-
-
           <div className="controller-two-column-row" id="setup-monitor-row">
-            
             <section className="control-card setup-config-card" id="setup-config-card">
               <div className="wide-card-heading">
                 <div>
@@ -241,7 +260,6 @@ function ControllerPage() {
                 />
               </div>
             </section>
-
 
             <section className="control-card monitor-preview-card" id="monitor-preview-card">
               <div className="wide-card-heading">
@@ -289,7 +307,7 @@ function ControllerPage() {
         </main>
       </div>
 
-
+      {/* Timer Config Modal */}
       <TimerConfigModal
         open={timerModalOpen}
         onClose={() => setTimerModalOpen(false)}
@@ -301,7 +319,7 @@ function ControllerPage() {
         isRunning={gameState.timer.running}
       />
 
-
+      {/* Theme Modal */}
       <Modal
         open={themeModalOpen}
         onClose={() => setThemeModalOpen(false)}
@@ -317,12 +335,78 @@ function ControllerPage() {
         />
       </Modal>
 
+      {/* Wheel Config Modal */}
       <WheelConfigModal
         open={wheelModalOpen}
         onClose={() => setWheelModalOpen(false)}
         currentEntries={gameState.wheel.entries}
         onSave={(entries) => controller.setWheel(entries)}
       />
+
+      {/* Host Permissions Modal */}
+      <HostPermissionsModal
+        open={permissionsModalOpen}
+        onClose={() => setPermissionsModalOpen(false)}
+        permissions={gameState.hostPermissions}
+        onUpdate={controller.updateHostPermissions}
+      />
+
+      {/* Question Manager Modal */}
+      <QuestionManagerModal
+        open={questionModalOpen}
+        onClose={() => setQuestionModalOpen(false)}
+        currentQuestion={gameState.question?.current}
+        questionStatus={gameState.question?.status}
+        questionHistory={gameState.question?.history}
+        onSetQuestion={controller.setQuestion}
+        onShowQuestion={controller.showQuestion}
+        onRevealAnswer={controller.revealAnswer}
+        onMarkQuestion={controller.markQuestion}
+        onClearQuestion={controller.clearQuestion}
+        onChangePage={controller.changePage}
+      />
+
+      {/* Game Statistics Modal */}
+      <GameStatsModal
+        open={statsModalOpen}
+        onClose={() => setStatsModalOpen(false)}
+        gameState={gameState}
+      />
+
+      {/* Reset Confirmation Modal */}
+      <Modal
+        open={resetConfirmOpen}
+        onClose={() => setResetConfirmOpen(false)}
+        title="RESET GAME CONFIRMATION"
+        size="medium"
+      >
+        <div className="reset-confirm-modal-body">
+          <div className="reset-confirm-icon">
+            <i className="bi bi-exclamation-triangle-fill text-danger" />
+          </div>
+          <p className="reset-confirm-text">
+            Are you sure you want to reset the game? This will reset all team scores, rounds, question history, and board status back to initial factory values.
+          </p>
+          <div className="reset-confirm-actions">
+            <Button
+              variant="secondary"
+              size="medium"
+              onClick={() => setResetConfirmOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              size="medium"
+              onClick={handleConfirmReset}
+              id="btn-confirm-game-reset"
+            >
+              <i className="bi bi-trash" />
+              <span>Confirm Reset</span>
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

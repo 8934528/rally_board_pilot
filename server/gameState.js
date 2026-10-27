@@ -1,3 +1,20 @@
+const MAX_HISTORY = 50;
+
+const DEFAULT_HOST_PERMISSIONS = {
+  score: true,
+  round: true,
+  status: true,
+  timer: true,
+  wheel: true,
+  team: false,
+  theme: false,
+  announcement: false,
+  winner: false,
+  reset: false,
+  wheelConfig: false,
+  questions: false
+};
+
 const gameState = {
   status: 'READY',
 
@@ -69,6 +86,18 @@ const gameState = {
     message: 'Congratulations!'
   },
 
+
+
+  question: {
+    current: null,         // id, category, difficulty, text, options, correctAnswer, points, explanation, metadata
+    status: 'idle',        // 'idle' | 'shown' | 'revealed' | 'marked'
+    lastResult: null,      // team, correct, points
+    history: []            // array of past question results
+  },
+
+  // Host permissions
+  hostPermissions: { ...DEFAULT_HOST_PERMISSIONS },
+
   activities: [
     {
       id: 'init-1',
@@ -79,12 +108,131 @@ const gameState = {
     }
   ],
 
+  // Statistics
+  stats: {
+    game: {
+      startedAt: null,
+      rounds: 0,
+      questionsAsked: 0,
+      wheelSpins: 0,
+      announcements: 0
+    },
+    teams: {
+      A: { pointsGained: 0, pointsLost: 0, questionsCorrect: 0, questionsIncorrect: 0 },
+      B: { pointsGained: 0, pointsLost: 0, questionsCorrect: 0, questionsIncorrect: 0 }
+    },
+    wheel: {
+      totalSpins: 0,
+      results: {}           // [resultText]: count 
+    },
+    questions: {
+      asked: 0,
+      correct: 0,
+      incorrect: 0,
+      pointsEarned: 0
+    }
+  },
+
   meta: {
     lastAction: 'System ready',
     lastActionAt: new Date().toISOString(),
-    revision: 0
+    revision: 0,
+    canUndo: false,
+    canRedo: false
   }
 };
+
+
+let undoStack = [];
+let redoStack = [];
+
+function snapshotState() {
+  
+  const snap = {
+    status: gameState.status,
+    round: { ...gameState.round },
+    teams: {
+      A: { ...gameState.teams.A },
+      B: { ...gameState.teams.B }
+    },
+    board: {
+      activePage: gameState.board.activePage,
+      theme: { ...gameState.board.theme }
+    },
+    timer: { ...gameState.timer },
+    wheel: {
+      entries: [...gameState.wheel.entries],
+      spinning: gameState.wheel.spinning,
+      result: gameState.wheel.result,
+      winnerIndex: gameState.wheel.winnerIndex
+    },
+    announcement: { ...gameState.announcement },
+    winner: { ...gameState.winner },
+    hostPermissions: { ...gameState.hostPermissions },
+    question: {
+      current: gameState.question.current ? { ...gameState.question.current } : null,
+      status: gameState.question.status,
+      lastResult: gameState.question.lastResult ? { ...gameState.question.lastResult } : null,
+      history: [...gameState.question.history]
+    }
+  };
+  return JSON.stringify(snap);
+}
+
+function restoreSnapshot(serialised) {
+  const snap = JSON.parse(serialised);
+  gameState.status = snap.status;
+  gameState.round = snap.round;
+  gameState.teams.A = snap.teams.A;
+  gameState.teams.B = snap.teams.B;
+  gameState.board.activePage = snap.board.activePage;
+  gameState.board.theme = snap.board.theme;
+  gameState.timer = { ...snap.timer, running: false };
+  gameState.wheel = snap.wheel;
+  gameState.announcement = snap.announcement;
+  gameState.winner = snap.winner;
+  gameState.hostPermissions = snap.hostPermissions;
+  gameState.question = snap.question;
+}
+
+export function pushHistory() {
+  undoStack.push(snapshotState());
+  if (undoStack.length > MAX_HISTORY) {
+    undoStack.shift();
+  }
+  redoStack = [];
+  _updateUndoRedoMeta();
+}
+
+export function undoState() {
+  if (undoStack.length === 0) return false;
+  redoStack.push(snapshotState());
+  const prev = undoStack.pop();
+  restoreSnapshot(prev);
+  gameState.meta.revision += 1;
+  gameState.meta.lastAction = 'Undo';
+  gameState.meta.lastActionAt = new Date().toISOString();
+  _updateUndoRedoMeta();
+  return true;
+}
+
+export function redoState() {
+  if (redoStack.length === 0) return false;
+  undoStack.push(snapshotState());
+  const next = redoStack.pop();
+  restoreSnapshot(next);
+  gameState.meta.revision += 1;
+  gameState.meta.lastAction = 'Redo';
+  gameState.meta.lastActionAt = new Date().toISOString();
+  _updateUndoRedoMeta();
+  return true;
+}
+
+function _updateUndoRedoMeta() {
+  gameState.meta.canUndo = undoStack.length > 0;
+  gameState.meta.canRedo = redoStack.length > 0;
+}
+
 
 let timerInterval = null;
 let transitionTimeout = null;
@@ -180,6 +328,78 @@ export function resetTimer() {
   gameState.timer.seconds = gameState.timer.total;
 }
 
+// Host permissions helpers
+export function getHostPermissions() {
+  return gameState.hostPermissions;
+}
+
+export function setHostPermissions(permissions) {
+  gameState.hostPermissions = {
+    ...DEFAULT_HOST_PERMISSIONS,
+    ...permissions
+  };
+}
+
+export function getDefaultHostPermissions() {
+  return { ...DEFAULT_HOST_PERMISSIONS };
+}
+
+// Stats helpers
+export function recordStatEvent(type, data = {}) {
+  switch (type) {
+    case 'game_started':
+      if (!gameState.stats.game.startedAt) {
+        gameState.stats.game.startedAt = new Date().toISOString();
+      }
+      break;
+    case 'round_advanced':
+      gameState.stats.game.rounds = Math.max(gameState.stats.game.rounds, data.number || 0);
+      break;
+    case 'score_add':
+      if (data.team && gameState.stats.teams[data.team]) {
+        gameState.stats.teams[data.team].pointsGained += data.amount || 0;
+      }
+      break;
+    case 'score_subtract':
+      if (data.team && gameState.stats.teams[data.team]) {
+        gameState.stats.teams[data.team].pointsLost += data.amount || 0;
+      }
+      break;
+    case 'wheel_spin':
+      gameState.stats.game.wheelSpins += 1;
+      gameState.stats.wheel.totalSpins += 1;
+      break;
+    case 'wheel_result':
+      if (data.result) {
+        gameState.stats.wheel.results[data.result] =
+          (gameState.stats.wheel.results[data.result] || 0) + 1;
+      }
+      break;
+    case 'announcement':
+      gameState.stats.game.announcements += 1;
+      break;
+    case 'question_asked':
+      gameState.stats.game.questionsAsked += 1;
+      gameState.stats.questions.asked += 1;
+      break;
+    case 'question_correct':
+      gameState.stats.questions.correct += 1;
+      gameState.stats.questions.pointsEarned += data.points || 0;
+      if (data.team && gameState.stats.teams[data.team]) {
+        gameState.stats.teams[data.team].questionsCorrect += 1;
+      }
+      break;
+    case 'question_incorrect':
+      gameState.stats.questions.incorrect += 1;
+      if (data.team && gameState.stats.teams[data.team]) {
+        gameState.stats.teams[data.team].questionsIncorrect += 1;
+      }
+      break;
+    default:
+      break;
+  }
+}
+
 export function resetGameState() {
   stopTimer();
 
@@ -187,6 +407,11 @@ export function resetGameState() {
     clearTimeout(transitionTimeout);
     transitionTimeout = null;
   }
+
+  // Clear history on full reset
+  undoStack = [];
+  redoStack = [];
+  _updateUndoRedoMeta();
 
   gameState.status = 'READY';
 
@@ -227,9 +452,42 @@ export function resetGameState() {
     message: 'Congratulations!'
   };
 
+  gameState.question = {
+    current: null,
+    status: 'idle',
+    lastResult: null,
+    history: []
+  };
+
+  gameState.stats = {
+    game: {
+      startedAt: null,
+      rounds: 0,
+      questionsAsked: 0,
+      wheelSpins: 0,
+      announcements: 0
+    },
+    teams: {
+      A: { pointsGained: 0, pointsLost: 0, questionsCorrect: 0, questionsIncorrect: 0 },
+      B: { pointsGained: 0, pointsLost: 0, questionsCorrect: 0, questionsIncorrect: 0 }
+    },
+    wheel: {
+      totalSpins: 0,
+      results: {}
+    },
+    questions: {
+      asked: 0,
+      correct: 0,
+      incorrect: 0,
+      pointsEarned: 0
+    }
+  };
+
   gameState.meta.revision += 1;
   gameState.meta.lastAction = 'Game reset';
   gameState.meta.lastActionAt = new Date().toISOString();
+  gameState.meta.canUndo = false;
+  gameState.meta.canRedo = false;
 
   setLastAction('Game reset to initial state', 'system');
 

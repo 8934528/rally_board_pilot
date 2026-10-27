@@ -654,3 +654,32 @@
   }
 }
 
+.host-control-restricted {
+  opacity: 0.38 !important;
+  pointer-events: none !important;
+  cursor: not-allowed !important;
+}
+
+button:disabled.host-pt-btn,
+button:disabled.host-sq-step-btn,
+button:disabled.rbp-icon-btn,
+button:disabled.rbp-button {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+}
+
+.host-permission-warning-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: 4px;
+  color: #fca5a5;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+

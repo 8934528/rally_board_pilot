@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react';
-
 import { GAME_EVENTS } from '../constants/gameEvents';
 import { useSocket } from './useSocket';
+import { ROLES } from '../constants/roles';
 
-export function useGameState() {
+/**
+ * @param {'controller'|'host'|'board'} role
+ */
+export function useGameState(role = ROLES.BOARD) {
   const {
     socket,
     connected,
     connectionError
-  } = useSocket();
+  } = useSocket(role);
 
-  const [gameState, setGameState] =
-    useState(null);
+  const [gameState, setGameState] = useState(null);
 
   useEffect(() => {
     const handleState = (state) => {
@@ -24,9 +26,7 @@ export function useGameState() {
     );
 
     if (socket.connected) {
-      socket.emit(
-        GAME_EVENTS.STATE_REQUEST
-      );
+      socket.emit(GAME_EVENTS.STATE_REQUEST);
     }
 
     return () => {

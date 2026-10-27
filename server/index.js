@@ -101,8 +101,7 @@ io.on(
     socket.on(
       'disconnect',
       (reason) => {
-        console.log(`[SOCKET] Disconnected: ${socket.id} (${reason})`
-        );
+        console.log(`[SOCKET] Disconnected: ${socket.id} (${reason})`);
       }
     );
   }

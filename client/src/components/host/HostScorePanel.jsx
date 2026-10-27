@@ -1,4 +1,6 @@
 import Button from '../common/Button';
+import Tooltip from '../common/Tooltip';
+import { useGame } from '../../context/GameContext';
 
 function HostScorePanel({
   team,
@@ -6,11 +8,13 @@ function HostScorePanel({
   onAdd,
   onSubtract
 }) {
+  const { hasHostPermission } = useGame();
+  const canScore = hasHostPermission('score');
   const data = gameState.teams[team];
 
   return (
     <section
-      className={`host-score-card host-team-${team.toLowerCase()}`}
+      className={`host-score-card host-team-${team.toLowerCase()} ${!canScore ? 'host-card-restricted' : ''}`}
       id={`host-score-card-${team}`}
       style={{
         '--team-accent-col': data.color
@@ -44,24 +48,31 @@ function HostScorePanel({
           {[-5, -1, 1, 5].map((pts) => {
             const isMinus = pts < 0;
             const amount = Math.abs(pts);
-
-            return (
+            const btn = (
               <Button
                 key={pts}
-                variant={
-                  isMinus ? 'score-minus' : 'score-plus'
-                }
+                variant={isMinus ? 'score-minus' : 'score-plus'}
                 size="small"
                 className="host-pt-btn"
+                disabled={!canScore}
                 onClick={() =>
-                  isMinus
-                    ? onSubtract(team, amount)
-                    : onAdd(team, amount)
+                  canScore && (isMinus ? onSubtract(team, amount) : onAdd(team, amount))
                 }
+                aria-label={`${isMinus ? 'Subtract' : 'Add'} ${amount} points`}
               >
                 {isMinus ? `−${amount}` : `+${amount}`}
               </Button>
             );
+
+            if (!canScore) {
+              return (
+                <Tooltip key={pts} content="Score adjustments restricted by Controller">
+                  <span>{btn}</span>
+                </Tooltip>
+              );
+            }
+
+            return btn;
           })}
         </div>
       </div>

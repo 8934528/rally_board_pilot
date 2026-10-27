@@ -5,6 +5,7 @@ import Scoreboard from './Scoreboard';
 import TimerPage from './TimerPage';
 import WheelPage from './WheelPage';
 import WinnerPage from './WinnerPage';
+import QuestionPage from './QuestionPage';
 import RoundTransitionModal from './RoundTransitionModal';
 
 import FullscreenButton from '../common/FullscreenButton';
@@ -63,6 +64,8 @@ function GameBoard({ gameState, connected }) {
         return <TimerPage gameState={gameState} />;
       case 'wheel':
         return <WheelPage gameState={gameState} />;
+      case 'question':
+        return <QuestionPage gameState={gameState} />;
       case 'announcement':
         return <AnnouncementPage gameState={gameState} />;
       case 'winner':

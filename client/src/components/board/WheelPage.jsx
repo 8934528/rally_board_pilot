@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
+import { audioManager } from '../../audio/audioManager';
 
 const SEGMENT_COLORS = [
   '#FF4D6D',
@@ -23,6 +24,13 @@ function WheelPage({ gameState, mini = false, showResultModal = true }) {
   const winnerIndex = gameState?.wheel?.winnerIndex;
 
   const [resultModalOpen, setResultModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (spinning && !mini) {
+      audioManager.playWheelSpinSequence(3200);
+    } else if (!spinning && !mini) {
+    }
+  }, [spinning, mini]);
 
   useEffect(() => {
     if (result && !spinning) {
@@ -62,7 +70,6 @@ function WheelPage({ gameState, mini = false, showResultModal = true }) {
 
   return (
     <div className={`board-wheel-screen ${mini ? 'mini-wheel-mode' : ''}`} id="board-wheel-screen">
-      {/* Prominent Wheel Pointer Arrow */}
       <div className="wheel-pointer-container" aria-hidden="true">
         <div className="wheel-pointer-arrow" />
       </div>

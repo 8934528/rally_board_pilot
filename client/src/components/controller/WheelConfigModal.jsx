@@ -29,9 +29,6 @@ function WheelConfigModal({
     }
   }, [open, initialCustoms]);
 
-  
-
-
   const arrangedEntries = useMemo(() => {
     return arrangeWheelEntries(DEFAULT_WHEEL_TEXTS, customTexts);
   }, [customTexts]);
@@ -67,35 +64,68 @@ function WheelConfigModal({
       open={open}
       onClose={onClose}
       title="CONFIGURE WHEEL OPTIONS"
-      size="medium"
+      size="wheel"
     >
       <div className="wheel-config-modal-content">
-        
-        <div className="wheel-config-section">
-          <div className="wheel-section-header">
-            <span className="wheel-section-title">DEFAULT GAME TEXTS</span>
-            <span className="wheel-section-badge">Required ({DEFAULT_WHEEL_TEXTS.length})</span>
+
+
+
+        <div className="wheel-config-row-two-col">
+
+          <div className="wheel-config-section">
+            <div className="wheel-section-header">
+              <span className="wheel-section-title">DEFAULT GAME TEXTS</span>
+              <span className="wheel-section-badge">Required ({DEFAULT_WHEEL_TEXTS.length})</span>
+            </div>
+            <p className="wheel-section-desc">
+              These default options are always included
+            </p>
+            <div className="wheel-chips-grid">
+              {DEFAULT_WHEEL_TEXTS.map((text, idx) => (
+                <div key={idx} className="wheel-chip default-chip">
+                  <i className="bi bi-shield-check" aria-hidden="true" />
+                  <span>{text}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <p className="wheel-section-desc">
-            These default options are always included and spread evenly around the wheel so they are not placed directly next to each other.
-          </p>
-          <div className="wheel-chips-grid">
-            {DEFAULT_WHEEL_TEXTS.map((text, idx) => (
-              <div key={idx} className="wheel-chip default-chip">
-                <i className="bi bi-shield-check" aria-hidden="true" />
-                <span>{text}</span>
-              </div>
-            ))}
+
+          <div className="wheel-config-section">
+            <div className="wheel-section-header">
+              <span className="wheel-section-title">CURRENT WHEEL PREVIEW</span>
+              <span className="wheel-section-badge-secondary">
+                Total Slices: {arrangedEntries.length}
+              </span>
+            </div>
+            <p className="wheel-section-desc">
+              Review the final wheel sequence below
+            </p>
+
+            <div className="wheel-preview-chips">
+              {arrangedEntries.map((entry, index) => {
+                const isDefault = DEFAULT_WHEEL_TEXTS.includes(entry);
+                return (
+                  <div
+                    key={`${entry}-${index}`}
+                    className={`wheel-preview-chip ${isDefault ? 'is-default' : 'is-custom'}`}
+                  >
+                    <span className="slice-index-badge">{index + 1}</span>
+                    <span className="slice-text-preview">{entry}</span>
+                    <span className="slice-type-tag">{isDefault ? 'Default' : 'Custom'}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
+
         </div>
 
-
-        <div className="wheel-config-section">
+        <div className="wheel-config-section wheel-custom-add-section">
           <div className="wheel-section-header">
             <span className="wheel-section-title">ADD CUSTOM TEXT</span>
           </div>
           <p className="wheel-section-desc">
-            Add your own custom wheel options. Click <strong>Add</strong> to preview them in the wheel sequence below before saving.
+            Add your own custom wheel options. Click <strong>Add</strong> to preview them in the wheel sequence before saving.
           </p>
 
           <form onSubmit={handleAdd} className="wheel-add-form">
@@ -151,39 +181,6 @@ function WheelConfigModal({
             </div>
           )}
         </div>
-
-
-
-
-        <div className="wheel-config-section">
-          <div className="wheel-section-header">
-            <span className="wheel-section-title">CURRENT WHEEL PREVIEW</span>
-            <span className="wheel-section-badge-secondary">
-              Total Slices: {arrangedEntries.length}
-            </span>
-          </div>
-          <p className="wheel-section-desc">
-            Review the final wheel sequence below. Default items and custom items are spread around the wheel.
-          </p>
-
-          <div className="wheel-preview-chips">
-            {arrangedEntries.map((entry, index) => {
-              const isDefault = DEFAULT_WHEEL_TEXTS.includes(entry);
-              return (
-                <div
-                  key={`${entry}-${index}`}
-                  className={`wheel-preview-chip ${isDefault ? 'is-default' : 'is-custom'}`}
-                >
-                  <span className="slice-index-badge">{index + 1}</span>
-                  <span className="slice-text-preview">{entry}</span>
-                  <span className="slice-type-tag">{isDefault ? 'Default' : 'Custom'}</span>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-
 
         <div className="wheel-modal-footer">
           <Button
