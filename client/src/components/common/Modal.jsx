@@ -5,6 +5,7 @@ function Modal({
   title,
   children,
   onClose,
+  subheader,
   footer,
   size = 'medium',
   className = ''
@@ -37,13 +38,13 @@ function Modal({
       onMouseDown={onClose}
       role="dialog"
       aria-modal="true"
-      aria-labelledby="modal-heading">
-
+      aria-labelledby="modal-heading"
+    >
       <div
         ref={modalRef}
         className={`rbp-modal rbp-modal-${size} ${className}`.trim()}
-        onMouseDown={(event) => event.stopPropagation()}>
-
+        onMouseDown={(event) => event.stopPropagation()}
+      >
         <div className="rbp-modal-header">
           <h2 id="modal-heading" className="rbp-modal-title">{title}</h2>
 
@@ -51,10 +52,13 @@ function Modal({
             type="button"
             className="modal-close"
             onClick={onClose}
-            aria-label="Close modal">
+            aria-label="Close modal"
+          >
             ×
           </button>
         </div>
+
+        {subheader && <div className="rbp-modal-subheader">{subheader}</div>}
 
         <div className="rbp-modal-body">{children}</div>
 
