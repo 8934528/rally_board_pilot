@@ -9,7 +9,10 @@ function HostControls({
   activePage
 }) {
   const { hasHostPermission } = useGame();
-  const canStatus = hasHostPermission('status');
+
+  if (!hasHostPermission('status')) {
+    return null;
+  }
 
   const isLive = status === 'LIVE';
   const isPaused = status === 'PAUSED';
@@ -21,65 +24,53 @@ function HostControls({
       role="group"
       aria-label="Host primary game controls"
     >
-      <Tooltip content={!canStatus ? 'Status control restricted by Controller' : 'Go Live (CTRL + L)'}>
+      <Tooltip content="Go Live (CTRL + L)">
         <span>
           <button
             type="button"
             className={`rbp-icon-btn rbp-icon-btn-small ${
               isLive ? 'rbp-button-success active-live' : 'rbp-button-secondary'
             }`}
-            disabled={!canStatus}
-            onClick={() => canStatus && onLive()}
+            onClick={onLive}
             id="btn-host-live"
             aria-label="Go Live"
             aria-pressed={isLive}
           >
-            <i
-              className="bi bi-broadcast"
-              aria-hidden="true"
-            />
+            <i className="bi bi-broadcast" aria-hidden="true" />
           </button>
         </span>
       </Tooltip>
 
-      <Tooltip content={!canStatus ? 'Status control restricted by Controller' : 'Pause (CTRL + P)'}>
+      <Tooltip content="Pause (CTRL + P)">
         <span>
           <button
             type="button"
             className={`rbp-icon-btn rbp-icon-btn-small ${
               isPaused ? 'rbp-button-warning active-pause' : 'rbp-button-secondary'
             }`}
-            disabled={!canStatus}
-            onClick={() => canStatus && onPause()}
+            onClick={onPause}
             id="btn-host-pause"
             aria-label="Pause"
             aria-pressed={isPaused}
           >
-            <i
-              className="bi bi-pause-circle-fill"
-              aria-hidden="true"
-            />
+            <i className="bi bi-pause-circle-fill" aria-hidden="true" />
           </button>
         </span>
       </Tooltip>
 
-      <Tooltip content={!canStatus ? 'View switching restricted by Controller' : 'Scoreboard'}>
+      <Tooltip content="Scoreboard">
         <span>
           <button
             type="button"
             className={`rbp-icon-btn rbp-icon-btn-small ${
               isScoreboard ? 'rbp-button-primary active-scoreboard' : 'rbp-button-secondary'
             }`}
-            disabled={!canStatus}
-            onClick={() => canStatus && onPage('scoreboard')}
+            onClick={() => onPage('scoreboard')}
             id="btn-host-show-scoreboard"
             aria-label="Show Scoreboard"
             aria-pressed={isScoreboard}
           >
-            <i
-              className="bi bi-trophy"
-              aria-hidden="true"
-            />
+            <i className="bi bi-trophy" aria-hidden="true" />
           </button>
         </span>
       </Tooltip>

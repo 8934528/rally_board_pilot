@@ -12,6 +12,10 @@ import './styles/host.css';
 import './styles/themes.css';
 import './styles/animations.css';
 import './styles/controller-console.css';
+import './styles/landing.css';
+import './styles/announcement.css';
+import './styles/host-access.css';
+import './styles/modals.css';
 
 import App from './App';
 

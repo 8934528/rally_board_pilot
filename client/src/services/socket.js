@@ -15,50 +15,44 @@ export const socket = io(
   }
 );
 
-let _pendingRole = null;
-let _pendingSecret = null;
+let pendingRole = null;
+let pendingSecret;
 
-/**
- * @param {'controller'|'host'|'board'} role
- * @param {string} [secret] - controller secret
- */
-export function setSocketRole(role, secret) {
-  _pendingRole = role;
-  _pendingSecret = secret || undefined;
+function applyRole(role, secret) {
+  pendingRole = role;
+  pendingSecret = secret || undefined;
   socket.auth = {
-    role: _pendingRole,
-    secret: _pendingSecret
+    role: pendingRole,
+    secret: pendingSecret
   };
 }
 
-socket.on('connect', () => {
-  if (_pendingRole) {
-    socket.emit(GAME_EVENTS.ROLE_REGISTER, {
-      role: _pendingRole,
-      secret: _pendingSecret
-    });
-  }
-});
+function registerRole() {
+  if (!pendingRole || !socket.connected) return;
+
+  socket.emit(GAME_EVENTS.ROLE_REGISTER, {
+    role: pendingRole,
+    secret: pendingSecret
+  });
+}
+
+socket.on('connect', registerRole);
+
+export function setSocketRole(role, secret) {
+  applyRole(role, secret);
+}
 
 export function connectSocket(role, secret) {
   if (role) {
-    _pendingRole = role;
-    _pendingSecret = secret;
-    socket.auth = {
-      role: _pendingRole,
-      secret: _pendingSecret
-    };
+    applyRole(role, secret ?? (role === pendingRole ? pendingSecret : undefined));
   }
 
   if (!socket.connected && !socket.active) {
     socket.connect();
-  } else if (socket.connected && _pendingRole) {
-    // connected – register immediately
-    socket.emit(GAME_EVENTS.ROLE_REGISTER, {
-      role: _pendingRole,
-      secret: _pendingSecret
-    });
+    return;
   }
+
+  registerRole();
 }
 
 export function emitEvent(event, payload) {

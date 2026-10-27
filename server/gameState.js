@@ -86,16 +86,13 @@ const gameState = {
     message: 'Congratulations!'
   },
 
-
-
   question: {
-    current: null,         // id, category, difficulty, text, options, correctAnswer, points, explanation, metadata
-    status: 'idle',        // 'idle' | 'shown' | 'revealed' | 'marked'
-    lastResult: null,      // team, correct, points
-    history: []            // array of past question results
+    current: null,
+    status: 'idle',
+    lastResult: null,
+    history: []
   },
 
-  // Host permissions
   hostPermissions: { ...DEFAULT_HOST_PERMISSIONS },
 
   activities: [
@@ -108,7 +105,6 @@ const gameState = {
     }
   ],
 
-  // Statistics
   stats: {
     game: {
       startedAt: null,
@@ -123,7 +119,7 @@ const gameState = {
     },
     wheel: {
       totalSpins: 0,
-      results: {}           // [resultText]: count 
+      results: {}
     },
     questions: {
       asked: 0,
@@ -142,12 +138,10 @@ const gameState = {
   }
 };
 
-
 let undoStack = [];
 let redoStack = [];
 
 function snapshotState() {
-  
   const snap = {
     status: gameState.status,
     round: { ...gameState.round },
@@ -180,6 +174,8 @@ function snapshotState() {
 }
 
 function restoreSnapshot(serialised) {
+  stopTimer();
+
   const snap = JSON.parse(serialised);
   gameState.status = snap.status;
   gameState.round = snap.round;
@@ -233,7 +229,6 @@ function _updateUndoRedoMeta() {
   gameState.meta.canRedo = redoStack.length > 0;
 }
 
-
 let timerInterval = null;
 let transitionTimeout = null;
 
@@ -285,17 +280,24 @@ export function triggerRoundTransition(roundNumber, roundName, onEnd) {
   }, 2200);
 }
 
+function clearTimerInterval() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+}
+
 export function startTimer(onTick) {
   if (gameState.timer.running) {
     return;
   }
 
+  clearTimerInterval();
   gameState.timer.running = true;
 
   timerInterval = setInterval(() => {
     if (gameState.timer.seconds <= 0) {
       stopTimer();
-      gameState.timer.running = false;
       onTick();
       return;
     }
@@ -307,19 +309,11 @@ export function startTimer(onTick) {
 
 export function pauseTimer() {
   gameState.timer.running = false;
-
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
+  clearTimerInterval();
 }
 
 export function stopTimer() {
-  if (timerInterval) {
-    clearInterval(timerInterval);
-    timerInterval = null;
-  }
-
+  clearTimerInterval();
   gameState.timer.running = false;
 }
 
@@ -328,7 +322,6 @@ export function resetTimer() {
   gameState.timer.seconds = gameState.timer.total;
 }
 
-// Host permissions helpers
 export function getHostPermissions() {
   return gameState.hostPermissions;
 }
@@ -344,7 +337,6 @@ export function getDefaultHostPermissions() {
   return { ...DEFAULT_HOST_PERMISSIONS };
 }
 
-// Stats helpers
 export function recordStatEvent(type, data = {}) {
   switch (type) {
     case 'game_started':
@@ -408,7 +400,6 @@ export function resetGameState() {
     transitionTimeout = null;
   }
 
-  // Clear history on full reset
   undoStack = [];
   redoStack = [];
   _updateUndoRedoMeta();

@@ -1,5 +1,4 @@
 import Button from '../common/Button';
-import Tooltip from '../common/Tooltip';
 import { useGame } from '../../context/GameContext';
 
 function HostRoundControls({
@@ -10,26 +9,9 @@ function HostRoundControls({
   const canRound = hasHostPermission('round');
 
   const nextRound = () => {
-    if (!canRound) return;
     const nextNum = gameState.round.number + 1;
     onRound(nextNum, `Round ${nextNum}`);
   };
-
-  const btn = (
-    <Button
-      variant="primary"
-      size="small"
-      onClick={nextRound}
-      disabled={!canRound}
-      id="btn-host-next-round"
-    >
-      <i className="bi bi-chevron-right" aria-hidden="true" />
-      <span>NEXT ROUND</span>
-      <span className="rbp-shortcut-badge">
-        CTRL + N
-      </span>
-    </Button>
-  );
 
   return (
     <section
@@ -52,12 +34,17 @@ function HostRoundControls({
         </div>
       </div>
 
-      {!canRound ? (
-        <Tooltip content="Round progression restricted by Controller">
-          <span>{btn}</span>
-        </Tooltip>
-      ) : (
-        btn
+      {canRound && (
+        <Button
+          variant="primary"
+          size="small"
+          onClick={nextRound}
+          id="btn-host-next-round"
+        >
+          <i className="bi bi-chevron-right" aria-hidden="true" />
+          <span>NEXT ROUND</span>
+          <span className="rbp-shortcut-badge">CTRL + N</span>
+        </Button>
       )}
     </section>
   );

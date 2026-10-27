@@ -3,9 +3,6 @@ import { ROLES } from '../constants/roles';
 import { socket, connectSocket } from '../services/socket';
 import { GAME_EVENTS } from '../constants/gameEvents';
 
-/**
- * @param {'controller'|'host'|'board'} role - role to register with the server
- */
 export function useSocket(role = ROLES.BOARD) {
   const [connected, setConnected] = useState(socket.connected);
   const [connectionError, setConnectionError] = useState(null);
@@ -22,9 +19,7 @@ export function useSocket(role = ROLES.BOARD) {
 
     const handleError = (error) => {
       setConnected(false);
-      setConnectionError(
-        error?.message || 'Connection failed'
-      );
+      setConnectionError(error?.message || 'Connection failed');
     };
 
     const handlePermissionDenied = ({ action, message }) => {
@@ -36,12 +31,8 @@ export function useSocket(role = ROLES.BOARD) {
     socket.on('connect_error', handleError);
     socket.on(GAME_EVENTS.PERMISSION_DENIED, handlePermissionDenied);
 
-    if (!socket.connected) {
-      connectSocket(role);
-    } else {
-      setConnected(true);
-      socket.emit(GAME_EVENTS.ROLE_REGISTER, { role });
-    }
+    setConnected(socket.connected);
+    connectSocket(role);
 
     return () => {
       socket.off('connect', handleConnect);

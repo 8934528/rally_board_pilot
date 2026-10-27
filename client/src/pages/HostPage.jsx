@@ -17,43 +17,58 @@ function HostPage() {
   const {
     connected,
     gameState,
-    controller: host
+    controller: host,
+    hasHostPermission
   } = useGame();
 
-  const shortcuts = useMemo(
-    () => ({
-      l: () => host.updateStatus('LIVE'),
+  const canScore = hasHostPermission('score');
+  const canRound = hasHostPermission('round');
+  const canStatus = hasHostPermission('status');
+  const canTimer = hasHostPermission('timer');
+  const canWheel = hasHostPermission('wheel');
+  const hasAnyControl = canScore || canRound || canStatus || canTimer || canWheel;
 
-      p: () => host.updateStatus('PAUSED'),
+  const shortcuts = useMemo(() => {
+    const map = {};
 
-      n: () => {
+    if (canStatus) {
+      map.l = () => host.updateStatus('LIVE');
+      map.p = () => host.updateStatus('PAUSED');
+    }
+
+    if (canRound) {
+      map.n = () => {
         if (gameState?.round) {
-          const nextNum =
-            gameState.round.number + 1;
-
-          host.updateRound(
-            nextNum,
-            `Round ${nextNum}`
-          );
+          const nextNum = gameState.round.number + 1;
+          host.updateRound(nextNum, `Round ${nextNum}`);
         }
-      },
+      };
+    }
 
-      'shift+x': () => host.spinWheel(),
+    if (canWheel) {
+      map['shift+x'] = () => host.spinWheel();
+    }
 
-      space: () => {
+    if (canTimer) {
+      map.space = () => {
         if (gameState?.timer?.running) {
           host.pauseTimer();
         } else {
           host.startTimer();
         }
-      }
-    }),
-    [
-      host,
-      gameState?.round,
-      gameState?.timer?.running
-    ]
-  );
+      };
+    }
+
+    return map;
+  }, [
+    host,
+    gameState?.round,
+    gameState?.timer?.running,
+    canStatus,
+    canRound,
+    canWheel,
+    canTimer
+  ]);
 
   useKeyboardShortcuts(shortcuts);
 
@@ -112,19 +127,26 @@ function HostPage() {
             </div>
 
             <HostControls
-              onLive={() =>
-                host.updateStatus('LIVE')
-              }
-              onPause={() =>
-                host.updateStatus('PAUSED')
-              }
+              onLive={() => host.updateStatus('LIVE')}
+              onPause={() => host.updateStatus('PAUSED')}
               onPage={host.changePage}
               status={gameState.status}
-              activePage={
-                gameState.board.activePage
-              }
+              activePage={gameState.board.activePage}
             />
           </div>
+
+          {!hasAnyControl && (
+            <div
+              className="host-no-access"
+              role="status"
+            >
+              <i className="bi bi-lock" aria-hidden="true" />
+              <h2>NO CONTROLS GRANTED</h2>
+              <p>
+                The Controller has not granted this Host any actions yet. Scores, round, timer, and wheel stay visible for reference.
+              </p>
+            </div>
+          )}
 
           <div className="host-team-round-row">
             <div className="host-col-4">

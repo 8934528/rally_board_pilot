@@ -1,6 +1,7 @@
 import Button from '../common/Button';
-import Tooltip from '../common/Tooltip';
 import { useGame } from '../../context/GameContext';
+
+const SCORE_STEPS = [-5, -1, 1, 5];
 
 function HostScorePanel({
   team,
@@ -14,7 +15,7 @@ function HostScorePanel({
 
   return (
     <section
-      className={`host-score-card host-team-${team.toLowerCase()} ${!canScore ? 'host-card-restricted' : ''}`}
+      className={`host-score-card host-team-${team.toLowerCase()}`}
       id={`host-score-card-${team}`}
       style={{
         '--team-accent-col': data.color
@@ -40,41 +41,33 @@ function HostScorePanel({
           </strong>
         </div>
 
-        <div
-          className="host-score-buttons"
-          role="group"
-          aria-label={`Points for Team ${team}`}
-        >
-          {[-5, -1, 1, 5].map((pts) => {
-            const isMinus = pts < 0;
-            const amount = Math.abs(pts);
-            const btn = (
-              <Button
-                key={pts}
-                variant={isMinus ? 'score-minus' : 'score-plus'}
-                size="small"
-                className="host-pt-btn"
-                disabled={!canScore}
-                onClick={() =>
-                  canScore && (isMinus ? onSubtract(team, amount) : onAdd(team, amount))
-                }
-                aria-label={`${isMinus ? 'Subtract' : 'Add'} ${amount} points`}
-              >
-                {isMinus ? `−${amount}` : `+${amount}`}
-              </Button>
-            );
+        {canScore && (
+          <div
+            className="host-score-buttons"
+            role="group"
+            aria-label={`Points for Team ${team}`}
+          >
+            {SCORE_STEPS.map((pts) => {
+              const isMinus = pts < 0;
+              const amount = Math.abs(pts);
 
-            if (!canScore) {
               return (
-                <Tooltip key={pts} content="Score adjustments restricted by Controller">
-                  <span>{btn}</span>
-                </Tooltip>
+                <Button
+                  key={pts}
+                  variant={isMinus ? 'score-minus' : 'score-plus'}
+                  size="small"
+                  className="host-pt-btn"
+                  onClick={() =>
+                    isMinus ? onSubtract(team, amount) : onAdd(team, amount)
+                  }
+                  aria-label={`${isMinus ? 'Subtract' : 'Add'} ${amount} points`}
+                >
+                  {isMinus ? `−${amount}` : `+${amount}`}
+                </Button>
               );
-            }
-
-            return btn;
-          })}
-        </div>
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

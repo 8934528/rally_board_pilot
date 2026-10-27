@@ -7,13 +7,8 @@ function AnnouncementPage({ gameState }) {
       </div>
 
       <h1>
-        {gameState.announcement.title ||
-          'ATTENTION'}
-      </h1>
-
-      <p>
         {gameState.announcement.text}
-      </p>
+      </h1>
 
     </section>
   );

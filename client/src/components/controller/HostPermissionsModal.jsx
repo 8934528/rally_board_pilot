@@ -137,9 +137,8 @@ function HostPermissionsModal({
     >
       <div className="permissions-modal-container">
         <div className="permissions-modal-header-desc">
-          <p>
+          <p class="text-center">
             Configure what actions the <strong>Host</strong> console is allowed to execute.
-            The server strictly validates these permissions for every incoming socket event.
           </p>
 
           <div className="permissions-preset-actions">
