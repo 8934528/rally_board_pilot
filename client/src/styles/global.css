@@ -469,6 +469,8 @@ button {
   to {
     opacity: 1;
   }
+dialog.rbp-drawer:not([open]) {
+  display: none !important;
 }
 
 .rbp-drawer.drawer {

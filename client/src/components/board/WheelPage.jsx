@@ -103,9 +103,6 @@ function WheelPage({ gameState, mini = false, showResultModal = true }) {
           size="medium"
         >
           <div className="wheel-result-modal-body">
-            <div className="result-trophy-icon">
-              <i className="bi bi-star-fill" />
-            </div>
             <div className="result-banner-label">SELECTED OUTCOME</div>
             <div className="result-highlight-text">{result}</div>
             <button

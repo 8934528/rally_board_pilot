@@ -106,7 +106,11 @@ function HostPage() {
         id="host-main-content"
       >
         <div className="host-grid-layout">
-          <div className="host-top-controls-bar">
+          <div className="host-page-heading">
+            <div className="host-room-header">
+              <div className="eyebrow">HOST ROOM</div>
+            </div>
+
             <HostControls
               onLive={() =>
                 host.updateStatus('LIVE')

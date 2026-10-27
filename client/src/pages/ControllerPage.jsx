@@ -18,8 +18,8 @@ import FullscreenButton from '../components/common/FullscreenButton';
 import ConnectionStatus from '../components/common/ConnectionStatus';
 import TimerConfigModal from '../components/common/TimerConfigModal';
 import Modal from '../components/common/Modal';
-import Drawer from '../components/common/Drawer';
 import PageManager from '../components/controller/PageManager';
+import WheelConfigModal from '../components/controller/WheelConfigModal';
 
 function ControllerPage() {
   useDocumentTitle('RBP - CONTROLLER');
@@ -32,7 +32,7 @@ function ControllerPage() {
 
   const [timerModalOpen, setTimerModalOpen] = useState(false);
   const [themeModalOpen, setThemeModalOpen] = useState(false);
-  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [wheelModalOpen, setWheelModalOpen] = useState(false);
 
   const [announcementEditing, setAnnouncementEditing] = useState(false);
   const [announcementDraft, setAnnouncementDraft] = useState(null);
@@ -132,15 +132,6 @@ function ControllerPage() {
     <div className="controller-shell" id="controller-root">
       <header className="controller-topbar" id="controller-topbar">
         <div className="controller-brand">
-          <button
-            type="button"
-            className="mobile-drawer-toggle-btn d-lg-none"
-            onClick={() => setMobileDrawerOpen(true)}
-            aria-label="Open mobile navigation drawer"
-          >
-            <i className="bi bi-list" />
-          </button>
-
           <div className="controller-logo">
             <span>RBP</span>
           </div>
@@ -158,7 +149,7 @@ function ControllerPage() {
         </div>
 
         <div className="controller-header-actions">
-          <ConnectionStatus connected={connected} label={true} />
+          <ConnectionStatus connected={connected} dotOnly={true} />
 
           <Link
             to="/activity"
@@ -258,14 +249,28 @@ function ControllerPage() {
                   <div className="eyebrow">MONITOR</div>
                   <h2>{announcementEditing ? 'Announcement Control' : 'Live Screen Preview'}</h2>
                 </div>
-                <button
-                  type="button"
-                  className="btn-link-action"
-                  onClick={() => setThemeModalOpen(true)}
-                  aria-label="Edit board theme"
-                >
-                  <i className="bi bi-palette" /> Edit Theme
-                </button>
+
+                <div className="monitor-heading-actions">
+                  <button
+                    type="button"
+                    className="btn-link-action monitor-wheel-action-btn"
+                    onClick={() => setWheelModalOpen(true)}
+                    aria-label="Add text and options to the wheel"
+                    title="Add text to wheel"
+                    id="btn-open-wheel-config"
+                  >
+                    <i className="bi bi-pie-chart-fill" />
+                    <span>Wheel Text</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn-link-action"
+                    onClick={() => setThemeModalOpen(true)}
+                    aria-label="Edit board theme"
+                  >
+                    <i className="bi bi-palette" /> Edit Theme
+                  </button>
+                </div>
               </div>
 
               {announcementEditing ? (
@@ -312,69 +317,12 @@ function ControllerPage() {
         />
       </Modal>
 
-      <Drawer
-        open={mobileDrawerOpen}
-        onClose={() => setMobileDrawerOpen(false)}
-        title="CONTROLLER NAVIGATION"
-        id="invokerDrawer"
-      >
-        <div className="mobile-drawer-content">
-          <div className="drawer-section">
-            <span className="drawer-section-title">GAME STATUS</span>
-            <div className="d-flex flex-column gap-1">
-              {['READY', 'LIVE', 'PAUSED', 'FINISHED'].map((st) => (
-                <button
-                  key={st}
-                  type="button"
-                  className={`status-control-btn ${gameState.status === st ? 'active' : ''}`}
-                  onClick={() => {
-                    controller.updateStatus(st);
-                    setMobileDrawerOpen(false);
-                  }}
-                >
-                  <span className={`status-indicator-dot ${gameState.status === st ? 'dot-active' : ''}`} />
-                  {st}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="drawer-section">
-            <span className="drawer-section-title">BOARD VIEW</span>
-            <PageManager
-              activePage={announcementEditing ? BOARD_PAGES.ANNOUNCEMENT : boardPage}
-              onChange={(p) => {
-                handlePageSelect(p);
-                setMobileDrawerOpen(false);
-              }}
-            />
-          </div>
-
-          <div className="drawer-section">
-            <span className="drawer-section-title">TOOLS</span>
-            <button
-              type="button"
-              className="sidebar-tool-btn w-100 mb-2"
-              onClick={() => {
-                setMobileDrawerOpen(false);
-                setTimerModalOpen(true);
-              }}
-            >
-              <i className="bi bi-stopwatch" />
-              <span>Configure Timer ({gameState.timer.seconds}s)</span>
-            </button>
-
-            <Link
-              to="/activity"
-              className="sidebar-tool-btn w-100"
-              onClick={() => setMobileDrawerOpen(false)}
-            >
-              <i className="bi bi-clock-history" />
-              <span>Activity Log</span>
-            </Link>
-          </div>
-        </div>
-      </Drawer>
+      <WheelConfigModal
+        open={wheelModalOpen}
+        onClose={() => setWheelModalOpen(false)}
+        currentEntries={gameState.wheel.entries}
+        onSave={(entries) => controller.setWheel(entries)}
+      />
     </div>
   );
 }

@@ -13,7 +13,7 @@ function HostControls({
 
   return (
     <div
-      className="host-controls items-end d-flex justify-content-end"
+      className="host-controls"
       role="group"
       aria-label="Host primary game controls"
     >

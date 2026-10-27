@@ -24,23 +24,34 @@ function TeamConfig({
 
   return (
     <div className="team-config-block" id={`team-config-${team}`}>
-      <div className="team-config-heading">
-        <span className="team-config-tag">TEAM {team} CONFIGURATION</span>
+      <div className="team-config-header">
+        <div className="team-title-row">
+          <span
+            className="team-color-indicator"
+            style={{ backgroundColor: color, boxShadow: `0 0 10px ${color}88` }}
+            aria-hidden="true"
+          />
+          <span className="team-config-tag">TEAM {team} CONFIGURATION</span>
+        </div>
       </div>
 
       <div className="team-field-group">
-        <label htmlFor={`team-name-${team}`}>Team Name</label>
+        <label htmlFor={`team-name-${team}`} className="field-label">
+          Team Name
+        </label>
         <input
           id={`team-name-${team}`}
+          type="text"
           className="team-input-text"
           value={name}
           maxLength={30}
           onChange={(event) => setName(event.target.value)}
+          placeholder={`Enter Team ${team} Name`}
         />
       </div>
 
       <div className="team-field-group">
-        <label>Team Color</label>
+        <label className="field-label">Team Color</label>
         <ColorPicker
           value={color}
           onChange={(newColor) => setColor(newColor)}
@@ -48,26 +59,27 @@ function TeamConfig({
         />
       </div>
 
-
-      <Button
-        variant={saved ? 'success' : 'primary'}
-        size="small"
-        className="team-save-btn"
-        id={`btn-save-team-${team}`}
-        onClick={save}
-      >
-        {saved ? (
-          <>
-            <i className="bi bi-check2" aria-hidden="true" />
-            <span>Saved</span>
-          </>
-        ) : (
-          <>
-            <i className="bi bi-floppy" aria-hidden="true" />
-            <span>Save Team</span>
-          </>
-        )}
-      </Button>
+      <div className="team-save-row">
+        <Button
+          variant={saved ? 'success' : 'primary'}
+          size="small"
+          className="team-save-btn"
+          id={`btn-save-team-${team}`}
+          onClick={save}
+        >
+          {saved ? (
+            <>
+              <i className="bi bi-check2" aria-hidden="true" />
+              <span>Saved</span>
+            </>
+          ) : (
+            <>
+              <i className="bi bi-floppy" aria-hidden="true" />
+              <span>Save Team {team}</span>
+            </>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }

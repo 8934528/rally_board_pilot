@@ -2,10 +2,10 @@ import Tooltip from './Tooltip';
 
 function ConnectionStatus({
   connected,
-  label = true,
-  dotOnly = false
+  label = false,
+  dotOnly = true
 }) {
-  const statusText = connected ? 'Connected' : 'Offline';
+  const statusText = connected ? 'Server Connected' : 'Server Disconnected';
   const showLabel = label && !dotOnly;
 
   const dot = (

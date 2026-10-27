@@ -60,6 +60,10 @@ function ScoreControls({
             />
           </div>
 
+          <span className="score-action-team-name">
+            {teamData.name}
+          </span>
+
           <div
             className="live-score-display"
             id={`live-score-${team}`}
@@ -68,13 +72,8 @@ function ScoreControls({
           </div>
         </div>
 
-        
-          <span className="score-action-team-name">
-            {teamData.name}
-          </span>
-
         <div className="score-control-action-column score-control-minus-column">
-
+          <span className="score-action-label">SUBTRACT</span>
           <div className="score-square-grid score-square-grid-minus"
             role="group"
             aria-label={`Subtract points for Team ${team}`}
@@ -86,7 +85,7 @@ function ScoreControls({
         </div>
 
         <div className="score-control-action-column score-control-plus-column">
-
+          <span className="score-action-label">ADD</span>
           <div
             className="score-square-grid score-square-grid-plus"
             role="group"

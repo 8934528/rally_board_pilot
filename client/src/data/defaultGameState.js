@@ -88,12 +88,13 @@ export const defaultGameState = {
 
   wheel: {
     entries: [
-      'Bonus Round',
-      'Double Points',
-      'Challenge',
+      'Add a point',
+      'Extra turn',
+      'Deduct a point',
       'Steal',
+      'Add two points',
       'Wildcard',
-      'Extra Turn'
+      'Deduct two points'
     ],
     spinning: false,
     result: null,

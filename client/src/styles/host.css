@@ -70,16 +70,35 @@
   gap: 12px;
 }
 
-.host-top-controls-bar {
+.host-page-heading {
   display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  gap: 16px;
   width: 100%;
+}
+
+.host-room-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.host-room-header .eyebrow {
+  font-size: 0.85rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin: 0;
+  line-height: 1;
 }
 
 .host-controls {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
   gap: 8px;
 }
@@ -240,11 +259,15 @@
 }
 
 .host-timer-card-panel {
-  align-items: stretch;
+  display: flex;
   flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 16px;
+  padding: 16px 18px;
 }
 
-.host-panel-header-row {
+.host-timer-main-row {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -252,81 +275,107 @@
   width: 100%;
 }
 
+.host-timer-display-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.host-timer-display-block .host-panel-eyebrow {
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
 .host-timer-readout {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-top: 4px;
+  align-items: center;
+  gap: 12px;
 }
 
 .host-timer-digits {
-  font-size: 1.8rem;
+  font-size: 3rem;
   font-weight: 950;
-  font-family: monospace;
+  font-family: monospace, sans-serif;
   color: #fff;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
 .host-timer-badge {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   font-weight: 900;
   letter-spacing: 0.1em;
-  padding: 2px 6px;
-  border-radius: 2px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
 }
 
 .host-timer-badge.badge-running {
-  background: rgba(49, 233, 129, 0.15);
-  color: var(--color-success);
+  background: rgba(49, 233, 129, 0.2);
+  color: #31e981;
+  border: 1px solid rgba(49, 233, 129, 0.4);
 }
 
 .host-timer-badge.badge-stopped {
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.host-timer-body-grid {
+.host-timer-controls-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: auto auto;
+  justify-content: space-between;
   align-items: end;
-  gap: 18px;
+  gap: 16px;
   width: 100%;
-  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border-subtle);
 }
 
-.host-timer-adjust-column,
-.host-timer-actions-column {
+.host-timer-control-group {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 6px;
 }
 
 .host-field-caption {
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.1em;
   color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .host-square-2x2-grid {
   display: grid;
-  grid-template-columns: repeat(2, 42px);
-  grid-template-rows: repeat(2, 32px);
-  gap: 4px;
+  grid-template-columns: repeat(2, 48px);
+  grid-template-rows: repeat(2, 36px);
+  gap: 6px;
 }
 
 .host-sq-step-btn {
-  width: 42px;
-  height: 32px;
+  width: 48px;
+  height: 36px;
   padding: 0;
   font-family: monospace, sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.85rem;
+  font-weight: 800;
 }
 
 .host-timer-action-buttons {
   display: flex;
-  align-items: flex-end;
-  gap: 6px;
-  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.host-timer-action-buttons .rbp-icon-btn {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
 }
 
 .host-wheel-panel {

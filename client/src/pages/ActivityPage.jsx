@@ -97,7 +97,7 @@ function ActivityPage() {
         </div>
 
         <div className="activity-topbar-right">
-          <ConnectionStatus connected={connected} label={true} />
+          <ConnectionStatus connected={connected} dotOnly={true} />
           <FullscreenButton />
         </div>
       </header>
@@ -147,7 +147,7 @@ function ActivityPage() {
           className="activity-feed-container activity-history"
           id="activity-feed-container"
         >
-          {/* Section: All / Recent */}
+          
           <section
             className="activity-spy-section"
             data-section-id="all"
