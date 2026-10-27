@@ -352,14 +352,10 @@ The game state is lost when the server restarts. Future versions may add persist
 - Persistent game sessions
 - Multiple game rooms
 - Room codes
-- Host permission management
-- Undo / redo
 - Saved themes
 - Saved wheel presets
 - Sound effects
 - Multiple teams
-- Question management
-- Game stats
 - Authentication
 - Database
 
