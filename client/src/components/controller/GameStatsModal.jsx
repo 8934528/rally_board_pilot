@@ -17,6 +17,11 @@ function GameStatsModal({
       onClose={onClose}
       title="GAME STATISTICS & METRICS"
       size="large"
+      footer={
+        <Button variant="secondary" size="medium" onClick={onClose} id="btn-close-stats">
+          Close
+        </Button>
+      }
     >
       <div className="stats-modal-container">
         <section className="stats-section">
@@ -166,12 +171,6 @@ function GameStatsModal({
               </div>
             )}
           </section>
-        </div>
-
-        <div className="stats-modal-footer">
-          <Button variant="secondary" size="medium" onClick={onClose}>
-            Close
-          </Button>
         </div>
       </div>
     </Modal>

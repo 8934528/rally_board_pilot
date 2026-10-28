@@ -325,6 +325,17 @@ function ControllerPage() {
         onClose={() => setThemeModalOpen(false)}
         title="BOARD THEME SELECTION"
         size="medium"
+        footer={
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={() => setThemeModalOpen(false)}
+            id="btn-close-theme-modal"
+          >
+            <i className="bi bi-check2" />
+            <span>Done</span>
+          </Button>
+        }
       >
         <ThemeEditor
           currentTheme={gameState.board.theme}
@@ -379,15 +390,8 @@ function ControllerPage() {
         onClose={() => setResetConfirmOpen(false)}
         title="RESET GAME CONFIRMATION"
         size="medium"
-      >
-        <div className="reset-confirm-modal-body">
-          <div className="reset-confirm-icon">
-            <i className="bi bi-exclamation-triangle-fill text-danger" />
-          </div>
-          <p className="reset-confirm-text">
-            Are you sure you want to reset the game? This will reset all team scores, rounds, question history, and board status back to initial factory values.
-          </p>
-          <div className="reset-confirm-actions">
+        footer={
+          <>
             <Button
               variant="secondary"
               size="medium"
@@ -404,7 +408,16 @@ function ControllerPage() {
               <i className="bi bi-trash" />
               <span>Confirm Reset</span>
             </Button>
+          </>
+        }
+      >
+        <div className="reset-confirm-modal-body">
+          <div className="reset-confirm-icon">
+            <i className="bi bi-exclamation-triangle-fill text-danger" />
           </div>
+          <p className="reset-confirm-text">
+            Are you sure you want to reset the game? This will reset all team scores, rounds, question history, and board status back to initial factory values.
+          </p>
         </div>
       </Modal>
     </div>

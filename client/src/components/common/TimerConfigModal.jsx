@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
 import Button from './Button';
-import Tooltip from './Tooltip';
 import { GAME_CONFIG } from '../../config/gameConfig';
 import { formatTime } from '../../utils/formatScore';
 
-const DECREASE_STEPS = [-1, -2, -5, -10];
+const DECREASE_STEPS = [-10, -5, -2, -1];
 const INCREASE_STEPS = [1, 2, 5, 10];
 
 function TimerConfigModal({
@@ -29,7 +28,7 @@ function TimerConfigModal({
     const val = Math.floor(Number(value));
 
     if (!Number.isFinite(val) || val < 0) {
-      setErrorMsg('Enter a whole number of seconds, 0 or higher.');
+      setErrorMsg('Enter a valid whole number of seconds (0 or higher).');
       return;
     }
 
@@ -58,131 +57,167 @@ function TimerConfigModal({
         <div className="tcm-footer">
           <div className="tcm-transport">
             {isRunning ? (
-              <Tooltip content="Pause Timer (CTRL + Space)">
-                <span>
-                  <Button variant="warning" size="small" onClick={onPause}>
-                    <i className="bi bi-pause-fill" aria-hidden="true" />
-                    <span>PAUSE</span>
-                  </Button>
-                </span>
-              </Tooltip>
+              <Button
+                variant="warning"
+                size="medium"
+                onClick={onPause}
+                id="btn-timer-modal-pause"
+              >
+                <i className="bi bi-pause-fill" aria-hidden="true" />
+                <span>PAUSE</span>
+              </Button>
             ) : (
-              <Tooltip content="Start Timer (CTRL + Space)">
-                <span>
-                  <Button variant="success" size="small" onClick={onStart}>
-                    <i className="bi bi-play-fill" aria-hidden="true" />
-                    <span>START</span>
-                  </Button>
-                </span>
-              </Tooltip>
+              <Button
+                variant="success"
+                size="medium"
+                onClick={onStart}
+                id="btn-timer-modal-start"
+              >
+                <i className="bi bi-play-fill" aria-hidden="true" />
+                <span>START</span>
+              </Button>
             )}
 
-            <Tooltip content="Reset Timer">
-              <span>
-                <Button variant="secondary" size="small" onClick={onReset}>
-                  <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
-                  <span>RESET</span>
-                </Button>
-              </span>
-            </Tooltip>
+            <Button
+              variant="secondary"
+              size="medium"
+              onClick={onReset}
+              id="btn-timer-modal-reset"
+            >
+              <i className="bi bi-arrow-counterclockwise" aria-hidden="true" />
+              <span>RESET</span>
+            </Button>
           </div>
 
-          <Button variant="primary" size="small" onClick={onClose}>
-            DONE
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={onClose}
+            id="btn-timer-modal-done"
+          >
+            <i className="bi bi-check2" />
+            <span>Done</span>
           </Button>
         </div>
       }
     >
       <div className="tcm">
-        <div className="tcm-display">
-          <div>
-            <span className="tcm-label">CONFIGURED DURATION</span>
-            <div className="tcm-readout">
-              <span className="tcm-readout-time">{formatTime(seconds)}</span>
-              <span className="tcm-readout-unit">{seconds}s</span>
+        <div className="tcm-hero">
+          <div className="tcm-hero-main">
+            <div className="tcm-status-row">
+              <span className="tcm-hero-label">ACTIVE DURATION</span>
+              <span className={`tcm-status-tag ${isRunning ? 'is-running' : 'is-ready'}`}>
+                <span className="tcm-status-pulse" />
+                {isRunning ? 'RUNNING' : seconds > 0 ? 'READY' : 'EXPIRED'}
+              </span>
+            </div>
+            <div className="tcm-hero-readout">
+              <span className="tcm-digital-clock">{formatTime(seconds)}</span>
+              <span className="tcm-seconds-pill">{seconds}s</span>
             </div>
           </div>
 
-          <div className="tcm-limit">
-            <span className="tcm-label">LIMIT</span>
-            <span className="tcm-limit-value">{GAME_CONFIG.maxTimerSeconds}s (3 min)</span>
+          <div className="tcm-hero-aside">
+            <div className="tcm-info-box">
+              <span className="tcm-info-label">MAX LIMIT</span>
+              <span className="tcm-info-val">{GAME_CONFIG.maxTimerSeconds}s (3 min)</span>
+            </div>
+            <div className="tcm-info-box">
+              <span className="tcm-info-label">SHORTCUT</span>
+              <span className="tcm-info-val">Space = Play/Pause</span>
+            </div>
           </div>
         </div>
 
         {errorMsg && (
           <div className="tcm-error" role="alert">
-            {errorMsg}
+            <i className="bi bi-exclamation-circle-fill" />
+            <span>{errorMsg}</span>
           </div>
         )}
 
-        <div className="tcm-grid">
-          <div className="tcm-field">
-            <span className="tcm-label">QUICK PRESETS</span>
-            <div className="tcm-presets">
-              {GAME_CONFIG.timerPresets.map((preset) => (
+        <div className="tcm-group">
+          <div className="tcm-group-header">
+            <span className="tcm-group-title">DURATION PRESETS</span>
+            <span className="tcm-group-hint">Select a common countdown duration</span>
+          </div>
+          <div className="tcm-presets-grid">
+            {GAME_CONFIG.timerPresets.map((preset) => {
+              const label = preset >= 60 ? `${preset / 60}m` : `${preset}s`;
+              const sub = preset >= 60 ? `(${preset}s)` : null;
+              return (
                 <button
                   key={preset}
                   type="button"
-                  className={`tcm-chip ${seconds === preset ? 'is-active' : ''}`}
+                  className={`tcm-preset-btn ${seconds === preset ? 'is-active' : ''}`}
                   onClick={() => handleApply(preset)}
                 >
-                  {preset >= 60 ? `${preset / 60}m` : `${preset}s`}
+                  <span className="tcm-preset-main">{label}</span>
+                  {sub && <span className="tcm-preset-sub">{sub}</span>}
                 </button>
-              ))}
-            </div>
+              );
+            })}
           </div>
+        </div>
 
-          <div className="tcm-field">
-            <label htmlFor="tcm-custom-seconds" className="tcm-label">
-              CUSTOM SECONDS (0 - {GAME_CONFIG.maxTimerSeconds})
-            </label>
-            <div className="tcm-input-wrap">
+
+
+        <div className="tcm-adjust-grid">
+          {/* Custom Input */}
+          <div className="tcm-group">
+            <div className="tcm-group-header">
+              <label htmlFor="tcm-custom-input" className="tcm-group-title">
+                CUSTOM DURATION
+              </label>
+              <span className="tcm-group-hint">0 to {GAME_CONFIG.maxTimerSeconds}s</span>
+            </div>
+            <div className="tcm-input-row">
               <input
-                id="tcm-custom-seconds"
+                id="tcm-custom-input"
                 type="number"
                 min="0"
                 max={GAME_CONFIG.maxTimerSeconds}
                 value={seconds}
-                onChange={(event) => handleApply(event.target.value)}
-                className="tcm-input"
+                onChange={(e) => handleApply(e.target.value)}
+                className="tcm-custom-number-input"
               />
-              <span className="tcm-input-unit">sec</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="tcm-grid">
-          <div className="tcm-field">
-            <span className="tcm-label">DECREASE</span>
-            <div className="tcm-steps" role="group" aria-label="Decrease timer">
-              {DECREASE_STEPS.map((step) => (
-                <button
-                  key={step}
-                  type="button"
-                  className="tcm-step is-minus"
-                  onClick={() => handleStep(step)}
-                  aria-label={`Subtract ${Math.abs(step)} seconds`}
-                >
-                  −{Math.abs(step)}
-                </button>
-              ))}
+              <span className="tcm-custom-unit">SECONDS</span>
             </div>
           </div>
 
-          <div className="tcm-field">
-            <span className="tcm-label">INCREASE</span>
-            <div className="tcm-steps" role="group" aria-label="Increase timer">
-              {INCREASE_STEPS.map((step) => (
-                <button
-                  key={step}
-                  type="button"
-                  className="tcm-step is-plus"
-                  onClick={() => handleStep(step)}
-                  aria-label={`Add ${step} seconds`}
-                >
-                  +{step}
-                </button>
-              ))}
+
+          <div className="tcm-group">
+            <div className="tcm-group-header">
+              <span className="tcm-group-title">FINE-TUNE ADJUSTMENT</span>
+              <span className="tcm-group-hint">Nudge timer up or down</span>
+            </div>
+            <div className="tcm-steppers-container">
+              <div className="tcm-steppers-row" role="group" aria-label="Decrease time">
+                {DECREASE_STEPS.map((step) => (
+                  <button
+                    key={step}
+                    type="button"
+                    className="tcm-step-btn is-decrease"
+                    onClick={() => handleStep(step)}
+                    aria-label={`Subtract ${Math.abs(step)} seconds`}
+                  >
+                    {step}s
+                  </button>
+                ))}
+              </div>
+              <div className="tcm-steppers-row" role="group" aria-label="Increase time">
+                {INCREASE_STEPS.map((step) => (
+                  <button
+                    key={step}
+                    type="button"
+                    className="tcm-step-btn is-increase"
+                    onClick={() => handleStep(step)}
+                    aria-label={`Add ${step} seconds`}
+                  >
+                    +{step}s
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>

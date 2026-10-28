@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from '../common/Modal';
+import Button from '../common/Button';
 import { audioManager } from '../../audio/audioManager';
 
 const SEGMENT_COLORS = [
@@ -108,17 +109,20 @@ function WheelPage({ gameState, mini = false, showResultModal = true }) {
           onClose={() => setResultModalOpen(false)}
           title="WHEEL RESULT"
           size="medium"
+          footer={
+            <Button
+              variant="primary"
+              size="medium"
+              onClick={() => setResultModalOpen(false)}
+              id="btn-dismiss-wheel-result"
+            >
+              Dismiss
+            </Button>
+          }
         >
           <div className="wheel-result-modal-body">
             <div className="result-banner-label">SELECTED OUTCOME</div>
             <div className="result-highlight-text">{result}</div>
-            <button
-              type="button"
-              className="rbp-button rbp-button-primary mt-3"
-              onClick={() => setResultModalOpen(false)}
-            >
-              DISMISS
-            </button>
           </div>
         </Modal>
       )}

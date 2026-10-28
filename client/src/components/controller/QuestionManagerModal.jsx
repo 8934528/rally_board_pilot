@@ -75,7 +75,7 @@ function QuestionManagerModal({
     onSetQuestion(newQ);
     setActiveTab('control');
 
-    // Reset form
+    // reset form
     setCustomText('');
     setCustomOptions(['', '', '', '']);
     setCustomExplanation('');
@@ -87,8 +87,7 @@ function QuestionManagerModal({
       onClose={onClose}
       title="QUESTION MANAGEMENT"
       size="large"
-    >
-      <div className="qm-modal-container">
+      subheader={
         <div className="qm-nav-tabs">
           <button
             type="button"
@@ -121,6 +120,14 @@ function QuestionManagerModal({
             <span>Create Question</span>
           </button>
         </div>
+      }
+      footer={
+        <Button variant="secondary" size="medium" onClick={onClose} id="btn-close-qm">
+          Close
+        </Button>
+      }
+    >
+      <div className="qm-modal-container">
 
 
 
@@ -455,12 +462,6 @@ function QuestionManagerModal({
             </div>
           </form>
         )}
-
-        <div className="qm-modal-footer">
-          <Button variant="secondary" size="medium" onClick={onClose}>
-            Close
-          </Button>
-        </div>
       </div>
     </Modal>
   );

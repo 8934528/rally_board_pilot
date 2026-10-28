@@ -5,63 +5,56 @@ const SCREENS = [
   {
     icon: 'bi-display',
     title: 'Game Board',
-    summary: 'The public screen for a TV, projector, or arena display.',
+    summary: 'Public screen for audience TV or projector display.',
     points: [
-      'Open it in a full-screen browser window: F11 on Windows, or Command + Control + F on Mac.',
-      'It shows only the active board view, so the audience never sees operator controls.',
-      'Keep it on the same network as the Controller so updates arrive instantly.'
+      'Full-screen view (F11)',
+      'Real-time automated sync'
     ]
   },
   {
     icon: 'bi-sliders',
     title: 'Controller',
-    summary: 'The operator console on the main computer.',
+    summary: 'Main operator console on master computer.',
     points: [
-      'Set up teams, rounds, timer, wheel entries, questions, theme, and announcements here.',
-      'Only the Controller can grant or revoke Host permissions and undo changes.',
-      'Keep this window open for the whole session so the live connection stays active.'
+      'Full game and team management',
+      'Configures permissions and timers'
     ]
   },
   {
     icon: 'bi-person-badge',
     title: 'Host',
-    summary: 'An optional second device for a co-presenter.',
+    summary: 'Co-presenter console for tablets or laptops.',
     points: [
-      'Use a tablet or laptop when another person runs the live game.',
-      'Only the controls the Controller has granted appear on the Host screen.',
-      'Every change made from Host updates the Board and Controller in real time.'
+      'Live handheld game execution',
+      'Uses permissions set by Controller'
     ]
   }
 ];
 
 const STEPS = [
   {
-    title: 'Open the Game Board',
-    text: 'place it on the main display and make it full screen.'
+    title: 'Open Game Board',
+    text: 'Show on audience screen in full screen mode.'
   },
   {
-    title: 'Open the Controller',
-    text: 'on the operator computer, set team names and colors.'
+    title: 'Configure Controller',
+    text: 'Set team names, timer length, and question decks.'
   },
   {
-    title: 'Prepare content before the audience sees it',
-    text: 'load the timer duration, wheel entries, questions, and announcements.'
+    title: 'Connect Host (Optional)',
+    text: 'Launch Host on mobile/tablet for co-hosts.'
   },
   {
-    title: 'Add a Host if needed',
-    text: 'open HOST on a second device when a co-presenter runs the game.'
-  },
-  {
-    title: 'Go live',
-    text: 'press the Live button to start, the CONTROLLER can undo up to 50 steps.'
+    title: 'Go Live',
+    text: 'Click LIVE to run the game with full undo support.'
   }
 ];
 
 const CHECKLIST = [
-  'Start the server with npm run dev or make dev, then confirm the status dot is green on every screen.',
-  'On other devices, replace localhost with the operator computer\u2019s network address.',
-  'Run a short test: show an announcement, start the timer, switch to the wheel, then reset the game.',
-  'Set Host permissions before the presenter takes over.'
+  'Verify server connection dot is green.',
+  'Connect all devices to operator network.',
+  'Test timer, wheel, and score controls.',
+  'Confirm Host permissions before starting.'
 ];
 
 const LAUNCH_SCREENS = [
@@ -71,7 +64,7 @@ const LAUNCH_SCREENS = [
     variant: 'controller',
     icon: 'bi-sliders',
     title: 'Controller',
-    description: 'Full Operator Console'
+    description: 'Operator Console'
   },
   {
     to: '/host',
@@ -79,7 +72,7 @@ const LAUNCH_SCREENS = [
     variant: 'host',
     icon: 'bi-person-badge',
     title: 'Host',
-    description: 'Live Game Console'
+    description: 'Co-Host Console'
   },
   {
     to: '/board',
@@ -96,112 +89,121 @@ function LandingPage() {
 
   return (
     <div className="lp-shell" id="landing-shell">
-      <header className="lp-header" id="landing-hero">
+      <header className="lp-header" id="landing-header">
         <div className="lp-brand">
-          <div>
-            <h3 className="lp-title">Rally Board Pilot</h3>
+          <div className="lp-logo">RBP</div>
+          <div className="lp-brand-info">
+            <span className="lp-tagline">Game Control &amp; Scoreboard</span>
           </div>
         </div>
-
-        <p className="lp-header-meta">Controller &middot; Host &middot; Game Board</p>
+        <div className="lp-header-meta">
+          <span className="lp-badge">CONTROLLER</span>
+          <span className="lp-badge">HOST</span>
+          <span className="lp-badge">GAME BOARD</span>
+        </div>
       </header>
 
-      <main className="lp-main" id="landing-columns">
-        <section className="lp-column lp-column--setup" aria-labelledby="lp-setup-title">
-          <header className="lp-column-head">
-            <span className="lp-column-number">01</span>
-            <h2 id="lp-setup-title" className="lp-column-title">SET UP YOUR SCREENS</h2>
-          </header>
+      <main className="lp-main-scroll" id="landing-main-scroll">
+        <div className="lp-main-row" id="landing-columns">
+          <section className="lp-column lp-column--setup" aria-labelledby="lp-setup-title">
+            <div className="lp-column-head">
+              <span className="lp-column-number">01</span>
+              <h2 id="lp-setup-title" className="lp-column-title">SET UP SCREENS</h2>
+            </div>
 
-          <div className="lp-screen-list">
-            {SCREENS.map((screen) => (
-              <article key={screen.title} className="lp-screen">
-                <div className="lp-screen-icon">
-                  <i className={`bi ${screen.icon}`} aria-hidden="true" />
-                </div>
-
-                <div className="lp-screen-body">
-                  <h3 className="lp-screen-title">{screen.title}</h3>
-                  <p className="lp-screen-summary">{screen.summary}</p>
-                  <ul className="lp-points">
-                    {screen.points.map((point) => (
-                      <li key={point}>{point}</li>
-                    ))}
-                  </ul>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="lp-checklist-block">
-            <h3 className="lp-subhead">BEFORE YOU GO LIVE</h3>
-            <ul className="lp-points">
-              {CHECKLIST.map((item) => (
-                <li key={item}>{item}</li>
+            <div className="lp-screen-list">
+              {SCREENS.map((screen) => (
+                <article key={screen.title} className="lp-screen">
+                  <div className="lp-screen-icon">
+                    <i className={`bi ${screen.icon}`} aria-hidden="true" />
+                  </div>
+                  <div className="lp-screen-body">
+                    <h3 className="lp-screen-title">{screen.title}</h3>
+                    <p className="lp-screen-summary">{screen.summary}</p>
+                    <ul className="lp-points">
+                      {screen.points.map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
               ))}
-            </ul>
-          </div>
-        </section>
+            </div>
 
-        <section className="lp-column lp-column--how" aria-labelledby="lp-how-title">
-          <header className="lp-column-head">
-            <span className="lp-column-number">02</span>
-            <h2 id="lp-how-title" className="lp-column-title">HOW IT WORKS</h2>
-          </header>
+            <div className="lp-checklist-block">
+              <h3 className="lp-subhead">BEFORE YOU GO LIVE</h3>
+              <ul className="lp-checklist">
+                {CHECKLIST.map((item) => (
+                  <li key={item}>
+                    <i className="bi bi-check2 text-success" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </section>
 
-          <ol className="lp-steps">
-            {STEPS.map((step, index) => (
-              <li key={step.title} className="lp-step">
-                <span className="lp-step-num">{index + 1}</span>
-                <div className="lp-step-body">
-                  <h3 className="lp-step-title">{step.title}</h3>
-                  <p className="lp-step-text">{step.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <section className="lp-column lp-column--how" aria-labelledby="lp-how-title">
+            <div className="lp-column-head">
+              <span className="lp-column-number">02</span>
+              <h2 id="lp-how-title" className="lp-column-title">HOW IT WORKS</h2>
+            </div>
 
-          <p className="lp-note">
-            LIVE marks the game as running on the board. PAUSED marks it as on hold. Neither changes scores.
-          </p>
-        </section>
+            <ol className="lp-steps">
+              {STEPS.map((step, index) => (
+                <li key={step.title} className="lp-step">
+                  <span className="lp-step-num">{index + 1}</span>
+                  <div className="lp-step-body">
+                    <h3 className="lp-step-title">{step.title}</h3>
+                    <p className="lp-step-text">{step.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
 
-        <section className="lp-column lp-column--open" aria-labelledby="lp-open-title">
-          <header className="lp-column-head">
-            <span className="lp-column-number">03</span>
-            <h2 id="lp-open-title" className="lp-column-title">OPEN A SCREEN</h2>
-          </header>
+            <div className="lp-note">
+              <i className="bi bi-info-circle-fill text-primary" />
+              <span>LIVE marks the game active on the board; PAUSED holds play. Neither modifies scores.</span>
+            </div>
+          </section>
 
-          <nav className="lp-launch-list" aria-label="Open a screen">
-            {LAUNCH_SCREENS.map((screen) => (
-              <Link
-                key={screen.id}
-                to={screen.to}
-                id={screen.id}
-                className={`lp-launch lp-launch--${screen.variant}`}
-              >
-                <span className="lp-launch-icon">
-                  <i className={`bi ${screen.icon}`} aria-hidden="true" />
-                </span>
+          <section className="lp-column lp-column--open" aria-labelledby="lp-open-title">
+            <div className="lp-column-head">
+              <span className="lp-column-number">03</span>
+              <h2 id="lp-open-title" className="lp-column-title">OPEN A SCREEN</h2>
+            </div>
 
-                <span className="lp-launch-body">
-                  <span className="lp-launch-title">{screen.title}</span>
-                  <span className="lp-launch-desc">{screen.description}</span>
-                </span>
+            <nav className="lp-launch-list" aria-label="Open a screen">
+              {LAUNCH_SCREENS.map((screen) => (
+                <Link
+                  key={screen.id}
+                  to={screen.to}
+                  id={screen.id}
+                  className={`lp-launch lp-launch--${screen.variant}`}
+                >
+                  <span className="lp-launch-icon">
+                    <i className={`bi ${screen.icon}`} aria-hidden="true" />
+                  </span>
+                  <span className="lp-launch-body">
+                    <span className="lp-launch-title">{screen.title}</span>
+                    <span className="lp-launch-desc">{screen.description}</span>
+                  </span>
+                  <i className="bi bi-arrow-right lp-launch-arrow" aria-hidden="true" />
+                </Link>
+              ))}
+            </nav>
 
-                <i className="bi bi-arrow-right lp-launch-arrow" aria-hidden="true" />
-              </Link>
-            ))}
-          </nav>
-
-          <p className="lp-note">
-            Only the Controller can change Host permissions. Changes apply to every connected screen immediately
-          </p>
-        </section>
+            <div className="lp-note">
+              <i className="bi bi-shield-check text-primary" />
+              <span>Only the Controller manages Host permissions, syncing instantly across devices.</span>
+            </div>
+          </section>
+        </div>
       </main>
 
-      <footer className="lp-footer">
-        <span>Rally Board Pilot</span>
+      <footer className="lp-footer" id="landing-footer">
+        <span className="lp-footer-brand">Rally Board Pilot &bull; Controller &bull; Host &bull; Game Board</span>
+        <span className="lp-footer-meta">Live Event Production Console</span>
       </footer>
     </div>
   );

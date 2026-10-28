@@ -134,10 +134,9 @@ function HostPermissionsModal({
       onClose={onClose}
       title="HOST ROLE PERMISSION MANAGEMENT"
       size="large"
-    >
-      <div className="permissions-modal-container">
+      subheader={
         <div className="permissions-modal-header-desc">
-          <p class="text-center">
+          <p>
             Configure what actions the <strong>Host</strong> console is allowed to execute.
           </p>
 
@@ -160,7 +159,20 @@ function HostPermissionsModal({
             </button>
           </div>
         </div>
-
+      }
+      footer={
+        <Button
+          variant="primary"
+          size="medium"
+          onClick={onClose}
+          id="btn-close-permissions"
+        >
+          <i className="bi bi-check2" />
+          <span>Done</span>
+        </Button>
+      }
+    >
+      <div className="permissions-modal-container">
         <div className="permissions-grid">
           {PERMISSION_DEFINITIONS.map((def) => {
             const isGranted = Boolean(localPerms[def.key]);
@@ -198,18 +210,6 @@ function HostPermissionsModal({
               </div>
             );
           })}
-        </div>
-
-        <div className="permissions-modal-footer">
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={onClose}
-            id="btn-close-permissions"
-          >
-            <i className="bi bi-check2" />
-            <span>Done</span>
-          </Button>
         </div>
       </div>
     </Modal>

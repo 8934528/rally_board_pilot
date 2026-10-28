@@ -65,13 +65,30 @@ function WheelConfigModal({
       onClose={onClose}
       title="CONFIGURE WHEEL OPTIONS"
       size="wheel"
+      footer={
+        <div className="wheel-modal-footer">
+          <Button
+            variant="secondary"
+            size="medium"
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            variant="primary"
+            size="medium"
+            onClick={handleSave}
+            id="btn-save-wheel-options"
+          >
+            <i className="bi bi-check2-circle" aria-hidden="true" />
+            <span>Save Wheel Options</span>
+          </Button>
+        </div>
+      }
     >
       <div className="wheel-config-modal-content">
-
-
-
         <div className="wheel-config-row-two-col">
-
           <div className="wheel-config-section">
             <div className="wheel-section-header">
               <span className="wheel-section-title">DEFAULT GAME TEXTS</span>
@@ -117,7 +134,6 @@ function WheelConfigModal({
               })}
             </div>
           </div>
-
         </div>
 
         <div className="wheel-config-section wheel-custom-add-section">
@@ -180,26 +196,6 @@ function WheelConfigModal({
               </div>
             </div>
           )}
-        </div>
-
-        <div className="wheel-modal-footer">
-          <Button
-            variant="secondary"
-            size="medium"
-            onClick={onClose}
-          >
-            Cancel
-          </Button>
-
-          <Button
-            variant="primary"
-            size="medium"
-            onClick={handleSave}
-            id="btn-save-wheel-options"
-          >
-            <i className="bi bi-check2-circle" aria-hidden="true" />
-            <span>Save Wheel Options</span>
-          </Button>
         </div>
       </div>
     </Modal>

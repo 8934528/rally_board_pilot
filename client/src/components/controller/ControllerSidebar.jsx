@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageManager from './PageManager';
 
@@ -56,65 +57,74 @@ function ControllerSidebar({
       </div>
 
       <div className="sidebar-section">
-        <div className="sidebar-heading">TOOLS & CONFIG</div>
-        <button
-          type="button"
-          id="btn-sidebar-permissions"
-          className="sidebar-tool-btn"
-          onClick={onOpenPermissionsModal}
-        >
-          <i className="bi bi-shield-lock" />
-          <span>Host Permissions</span>
-        </button>
+        <div className="sidebar-heading sidebar-heading--tools">Tools and Configuration</div>
+        <div className="sidebar-tools-grid">
+          
 
-        <button
-          type="button"
-          id="btn-sidebar-questions"
-          className="sidebar-tool-btn"
-          onClick={onOpenQuestionModal}
-        >
-          <i className="bi bi-patch-question" />
-          <span>Questions</span>
-        </button>
+          <button
+            type="button"
+            id="btn-sidebar-permissions"
+            className="sidebar-tool-grid-btn"
+            onClick={onOpenPermissionsModal}
+          >
+            <i className="bi bi-shield-lock" />
+            <span>Host Permission</span>
+          </button>
 
-        <button
-          type="button"
-          id="btn-sidebar-stats"
-          className="sidebar-tool-btn"
-          onClick={onOpenStatsModal}
-        >
-          <i className="bi bi-graph-up" />
-          <span>Game Stats</span>
-        </button>
+          <button
+            type="button"
+            id="btn-sidebar-questions"
+            className="sidebar-tool-grid-btn"
+            onClick={onOpenQuestionModal}
+          >
+            <i className="bi bi-patch-question" />
+            <span>Questions</span>
+          </button>
 
-        <button
-          type="button"
-          id="btn-sidebar-timer"
-          className="sidebar-tool-btn"
-          onClick={onOpenTimerModal}
-        >
-          <i className="bi bi-stopwatch" />
-          <span>Timer Config</span>
-          <span className="sidebar-tool-meta">{timerSeconds}s</span>
-        </button>
 
-        <button
-          type="button"
-          id="btn-sidebar-theme"
-          className="sidebar-tool-btn"
-          onClick={onOpenThemeModal}
-        >
-          <i className="bi bi-palette" />
-          <span>Board Theme</span>
-        </button>
 
-        <Link to="/activity" id="link-sidebar-activity" className="sidebar-tool-btn">
-          <i className="bi bi-clock-history" />
-          <span>Activity Log</span>
-          <span className="sidebar-tool-meta">
-            <i className="bi bi-arrow-up-right" />
-          </span>
-        </Link>
+
+
+
+          <button
+            type="button"
+            id="btn-sidebar-stats"
+            className="sidebar-tool-grid-btn"
+            onClick={onOpenStatsModal}
+          >
+            <i className="bi bi-graph-up" />
+            <span>Game Stats</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-sidebar-timer"
+            className="sidebar-tool-grid-btn"
+            onClick={onOpenTimerModal}
+          >
+            <i className="bi bi-stopwatch" />
+            <span>Timer Configuration</span>
+          </button>
+
+          <button
+            type="button"
+            id="btn-sidebar-theme"
+            className="sidebar-tool-grid-btn"
+            onClick={onOpenThemeModal}
+          >
+            <i className="bi bi-palette" />
+            <span>Board Theme</span>
+          </button>
+
+          <Link
+            to="/activity"
+            id="link-sidebar-activity"
+            className="sidebar-tool-grid-btn"
+          >
+            <i className="bi bi-clock-history" />
+            <span>Activity Log</span>
+          </Link>
+        </div>
       </div>
     </aside>
   );
