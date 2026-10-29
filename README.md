@@ -16,19 +16,27 @@ It gives you three separate screens: **Controller**, **Host**, and **Game Board*
 [![Socket.IO](https://img.shields.io/badge/Socket.IO-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
 [![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
 
+
 ### Screenshots
 
-**Controller** — Full operator console
-
-![Controller Screen](client/public/controller.png)
-
-**Host** — Live game console for a co-presenter
-
-![Host Screen](client/public/host.png)
-
-**Game Board** — Public display for the audience
-
-![Game Board Screen](client/public/board.png)
+<table>
+  <tr>
+    <th>Controller - operator console</th>
+    <th>Host - console for co-presenter</th>
+    <th>Board - display for audience</th>
+  </tr>
+  <tr>
+    <td width="33%">
+      <img src="client/public/controller.png" alt="Controller Screen" width="100%">
+    </td>
+    <td width="33%">
+      <img src="client/public/host.png" alt="Host Screen" width="100%">
+    </td>
+    <td width="33%">
+      <img src="client/public/board.png" alt="Game Board Screen" width="100%">
+    </td>
+  </tr>
+</table>
 
 ---
 

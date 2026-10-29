@@ -5,22 +5,27 @@ import { Server } from 'socket.io';
 
 import { registerSocketHandlers } from './socketHandlers.js';
 
-import {
-  getGameState
-} from './gameState.js';
+import { getGameState } from './gameState.js';
+
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const clientBuildPath = path.join(__dirname, '../dist');
+
 const server = http.createServer(app);
 
-const PORT = Number(
-  process.env.PORT || 3001
-);
+const PORT = Number(process.env.PORT || 3001);
 
 const allowedOrigins = [
+  process.env.CLIENT_URL,
   'http://localhost:5173',
   'http://127.0.0.1:5173'
-];
+].filter(Boolean);
 
 const corsOrigin = (origin, callback) => {
   if (!origin) {
@@ -74,6 +79,24 @@ app.get(
     res.json(getGameState());
   }
 );
+
+// serve the built React website
+app.use(express.static(clientBuildPath));
+
+// support direct visits to /controller, /host and /board
+app.use((req, res, next) => {
+  if (
+    req.method === 'GET' &&
+    !req.path.startsWith('/api/') &&
+    !req.path.startsWith('/socket.io/')
+  ) {
+    return res.sendFile(
+      path.join(clientBuildPath, 'index.html')
+    );
+  }
+
+  next();
+});
 
 io.on(
   'connection',
